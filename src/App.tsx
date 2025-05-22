@@ -696,7 +696,7 @@ export default function App() {
         </button>
         {/* Button to toggle the rules customization panel */}
         <button className="rules-toggle-btn" onClick={() => setShowRulesPanel(true)}>
-            Customize Rules
+            Customise Rules
         </button>
       </div>
 
