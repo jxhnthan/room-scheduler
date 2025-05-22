@@ -645,7 +645,7 @@ export default function App() {
    * @returns The abbreviated room name.
    */
   const getAbbreviatedRoomName = (fullRoomName: string): string => {
-    return fullRoomName.replace("Counselling ", "Rm ");
+    return fullRoomName.replace("Counselling ", "");
   };
 
   return (
