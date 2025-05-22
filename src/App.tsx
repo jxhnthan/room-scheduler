@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import html2canvas from "html2canvas"; // Import html2canvas
 import "./App.css";
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
@@ -143,6 +144,10 @@ export default function App() {
 
   // Ref to keep track of the last assigned therapist index for round-robin distribution
   const lastAssignedIndex = useRef(0);
+
+  // Ref for the schedule table container to capture it as an image
+  const scheduleTableRef = useRef<HTMLDivElement>(null);
+
 
   /**
    * Effect to load schedule from localStorage on component mount.
@@ -589,12 +594,58 @@ export default function App() {
   // --- End Auto-Roster Function ---
 
   /**
+   * Handles the PNG capture and download of the schedule table.
+   */
+  const saveScheduleAsPNG = async () => {
+    if (scheduleTableRef.current) {
+      setSavedMsg("Capturing schedule as image...");
+      try {
+        // html2canvas options:
+        // - useCORS: true if you have images from other domains (e.g., profile pictures)
+        // - scale: Increase scale for higher resolution image (e.g., 2 for 2x resolution)
+        const canvas = await html2canvas(scheduleTableRef.current, {
+          scale: 2, // Capture at 2x resolution for better clarity
+          useCORS: true, // Set to true if you load images from external domains
+          logging: false, // Set to true for debugging html2canvas issues
+          backgroundColor: '#FFFFFF', // Ensure background is white if transparent issues occur
+        });
+
+        // Create an image URL from the canvas
+        const image = canvas.toDataURL("image/png");
+
+        // Create a temporary link element to trigger the download
+        const link = document.createElement("a");
+        link.href = image;
+        // Dynamically name the file with current date and time
+        const now = new Date();
+        const fileName = `Therapist_Roster_${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}.png`;
+        link.download = fileName;
+
+        // Append to body, click, and remove
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        setSavedMsg("Schedule saved as PNG!");
+      } catch (error) {
+        console.error("Failed to save schedule as PNG:", error);
+        setSavedMsg("Error: Failed to save schedule as PNG.");
+      }
+      setTimeout(() => setSavedMsg(""), 5000);
+    } else {
+      setSavedMsg("Error: Schedule table not found for capture.");
+      setTimeout(() => setSavedMsg(""), 5000);
+    }
+  };
+
+
+  /**
    * Helper function to get an abbreviated room name (e.g., "Counselling Room A" -> "Rm A").
    * @param fullRoomName - The full name of the room.
    * @returns The abbreviated room name.
    */
   const getAbbreviatedRoomName = (fullRoomName: string): string => {
-    return fullRoomName.replace("Counselling ", "");
+    return fullRoomName.replace("Counselling ", "Rm ");
   };
 
   return (
@@ -645,7 +696,7 @@ export default function App() {
         </button>
         {/* Button to toggle the rules customization panel */}
         <button className="rules-toggle-btn" onClick={() => setShowRulesPanel(true)}>
-            Customise Rules
+            Customize Rules
         </button>
       </div>
 
@@ -668,17 +719,9 @@ export default function App() {
 
           {/* Therapist Slot Counts Panel */}
           <div className="therapist-counts-panel">
-            <h3>Room Overview</h3>
+            <h3>Therapist Assignments Overview</h3>
             {therapists.map(t => {
                 const currentTherapistCounts = therapistSlotCounts[t];
-                // Find the maximum room assignment for *this specific therapist*
-                // This helps in calculating the percentage width for bar charts if implemented.
-                // For this textual display, it's not directly used but good for context.
-                // If no assignments, default to 1 to prevent division by zero.
-                const maxAssignmentsForThisTherapist = currentTherapistCounts
-                    ? Math.max(...Object.values(currentTherapistCounts.roomDistribution))
-                    : 1;
-
                 return (
                     <div key={`count-${t}`} className="therapist-count-item">
                         <div className="therapist-summary">
@@ -699,7 +742,8 @@ export default function App() {
         </div>
 
         {/* Schedule Table Wrapper */}
-        <div className="schedule-table-wrapper">
+        {/* Add the ref to the div you want to capture */}
+        <div className="schedule-table-wrapper" ref={scheduleTableRef}>
           <table>
             <thead>
               {viewType === "weekly" ? (
@@ -834,6 +878,10 @@ export default function App() {
             <button className="copy-btn" onClick={saveSchedule}>
               Save & Copy Sharable Link
             </button>
+            {/* New button for saving as PNG */}
+            <button className="copy-btn save-png-btn" onClick={saveScheduleAsPNG}>
+                Save as PNG
+            </button>
           </div>
           {/* Message display for save/error feedback */}
           {savedMsg && <p className={`saved-msg ${savedMsg.startsWith("Error") ? 'error' : ''}`}>{savedMsg}</p>}
@@ -847,7 +895,7 @@ export default function App() {
             <button className="close-panel-btn" onClick={() => setShowRulesPanel(false)}>&times;</button>
         </div>
         <p className="rules-hint">
-            Define rules for each therapist. The auto-roster will attempt to fill the schedule based on these constraints, prioritising an equal distribution of assignments and rooms.
+            Define rules for each therapist. The auto-roster will attempt to fill the schedule based on these constraints, prioritizing an equal distribution of assignments and rooms.
         </p>
         <div className="rules-scroll-area">
           {therapists.map(therapist => (
