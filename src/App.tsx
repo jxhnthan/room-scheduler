@@ -719,7 +719,7 @@ export default function App() {
 
           {/* Therapist Slot Counts Panel */}
           <div className="therapist-counts-panel">
-            <h3>Therapist Assignments Overview</h3>
+            <h3>Room Overview</h3>
             {therapists.map(t => {
                 const currentTherapistCounts = therapistSlotCounts[t];
                 return (
