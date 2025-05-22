@@ -566,6 +566,23 @@ small {
   background: var(--color-secondary-dark);
 }
 
+.save-png-btn { /* New style for the PNG save button */
+  background: #4CAF50; /* Green */
+}
+
+.save-png-btn:hover {
+  background: #388E3C; /* Darker green */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.save-png-btn:focus,
+.save-png-btn:focus-visible {
+  outline: 3px solid #A5D6A7; /* Lighter green outline */
+  outline-offset: 2px;
+  background: #388E3C;
+}
+
+
 .saved-msg {
   margin-top: 1rem;
   padding: 0.75rem 1rem;
@@ -592,7 +609,7 @@ small {
   border: 1px solid var(--color-primary-lighter);
 }
 
-/* === Therapist Counts Panel - Option 1: Enhanced Textual === */
+/* === Therapist Counts Panel === */
 .therapist-counts-panel {
   margin-top: 20px;
   padding: 15px;
@@ -679,6 +696,7 @@ small {
   color: var(--color-text-mid);
   border: 1px solid #e2e8f0;
 }
+
 
 /* === Responsive Adjustments === */
 @media (max-width: 992px) {
