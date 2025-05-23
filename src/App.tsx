@@ -654,7 +654,7 @@ export default function App() {
         {showRulesPanel && <div className="rules-overlay" onClick={() => setShowRulesPanel(false)}></div>}
 
       <div className="header-content">
-        <h1>Therapist Room Allocation</h1>
+        <h1>HWB SWEE Room Allocation</h1>
         <div className="current-time">{currentTime}</div>
       </div>
 
