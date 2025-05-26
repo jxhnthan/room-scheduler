@@ -5,13 +5,13 @@ import "./App.css";
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 const slots = ["AM", "PM"] as const; // 'as const' for stricter type inference
 const rooms = [
-  "Counselling Room A",
-  "Counselling Room B",
-  "Counselling Room C",
-  "Counselling Room D",
+  "Room A",
+  "Room B",
+  "Room C",
+  "Room D",
   "Biz 2",
   "CLB",
-  "Level 4 Pod",
+  "L4 Pod",
   "UHC",
   "BTC",
 ];
