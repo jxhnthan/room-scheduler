@@ -383,21 +383,26 @@ h1 {
 
 table {
   width: 100%;
-  border-collapse: collapse; /* Keep border-collapse: collapse */
+  /* --- SIMPLER BORDER SOLUTION: border-collapse: separate with spacing --- */
+  border-collapse: separate; /* This is KEY for explicit border control */
+  border-spacing: 0; /* No space between cells, borders are drawn on cells themselves */
+  border-top: 1px solid var(--color-border-medium); /* Top outer border of the table */
+  border-left: 1px solid var(--color-border-medium); /* Left outer border of the table */
   text-align: center;
   min-width: fit-content;
 }
 
 th,
 td {
-  /* Define borders for all cells.
-     The 'border-collapse' property on the table will merge these,
-     but defining them explicitly helps prevent weird rendering issues.
-     We might need to adjust the specific sticky column borders later.
-  */
-  border: 1px solid var(--color-border-medium);
+  /* Apply borders to the right and bottom of each cell.
+     This creates a grid where each cell "owns" its right and bottom lines. */
+  border-right: 1px solid var(--color-border-medium);
+  border-bottom: 1px solid var(--color-border-medium);
+  border-top: none; /* Explicitly remove top/left as table handles outer and cells handle inner */
+  border-left: none; /* Explicitly remove top/left as table handles outer and cells handle inner */
+
   padding: 0.5rem;
-  min-width: 90px; /* Base min-width for cells */
+  min-width: 90px;
   max-width: 150px;
   vertical-align: middle;
   font-size: 0.9rem;
@@ -413,8 +418,8 @@ th {
   position: sticky;
   top: 0;
   z-index: 10;
-  /* Add box-shadow to the bottom of sticky headers to ensure a crisp line */
-  box-shadow: 0 1px 0 0 var(--color-border-medium);
+  /* With border-collapse: separate, no need for box-shadow on sticky headers */
+  box-shadow: none;
 }
 
 /* Base sticky behavior for the first column (e.g., Daily View's Slot) */
@@ -426,9 +431,11 @@ th {
   background-color: var(--color-background-table-header); /* for header */
   width: 90px; /* Explicit width for predictable sticky behavior */
   min-width: 90px;
-  /* Use box-shadow to ensure the right border is always visible on sticky elements */
-  box-shadow: 1px 0 0 0 var(--color-border-medium), /* Right border */
-              -1px 0 0 0 var(--color-border-medium); /* Left border, for the very first column */
+  /* Borders for sticky elements are now handled by the general th/td rule,
+     but we might need to re-add a left border if first-child isn't picking it up,
+     or if the table's left border is not sufficient (which it should be).
+     Explicitly add it to ensure it's there. */
+  border-left: 1px solid var(--color-border-medium); /* Explicit left border for the very first column */
 }
 .schedule-table-wrapper td:first-child {
   background-color: var(--color-background-white); /* for data cells */
@@ -440,10 +447,9 @@ th {
   left: 0;
   z-index: 12; /* Highest z-index for the outermost sticky column */
   background-color: var(--color-background-table-header);
-  box-shadow: 1px 0 0 0 var(--color-border-medium), /* Right border */
-              -1px 0 0 0 var(--color-border-medium); /* Left border */
   width: 90px; /* Explicit width */
   min-width: 90px;
+  border-left: 1px solid var(--color-border-medium); /* Explicit left border */
 }
 
 .weekly-view-active .sticky-col-day-cell {
@@ -451,10 +457,9 @@ th {
   left: 0;
   z-index: 12;
   background-color: var(--color-background-white);
-  box-shadow: 1px 0 0 0 var(--color-border-medium), /* Right border */
-              -1px 0 0 0 var(--color-border-medium); /* Left border */
   width: 90px;
   min-width: 90px;
+  border-left: 1px solid var(--color-border-medium); /* Explicit left border */
 }
 
 .weekly-view-active .sticky-col-slot {
@@ -462,10 +467,10 @@ th {
   left: 90px; /* This must be the exact width of .sticky-col-day */
   z-index: 11; /* Lower than day column, higher than normal cells */
   background-color: var(--color-background-table-header);
-  box-shadow: 1px 0 0 0 var(--color-border-medium), /* Right border */
-              -1px 0 0 0 var(--color-border-medium); /* Left border */
   width: 90px;
   min-width: 90px;
+  /* The left border for this cell will be handled by the general td/th rule's
+     left border as it's not the very first column. */
 }
 
 .weekly-view-active .sticky-col-slot-cell {
@@ -473,10 +478,10 @@ th {
   left: 90px; /* This must be the exact width of .sticky-col-day-cell */
   z-index: 11;
   background-color: var(--color-background-white);
-  box-shadow: 1px 0 0 0 var(--color-border-medium), /* Right border */
-              -1px 0 0 0 var(--color-border-medium); /* Left border */
   width: 90px;
   min-width: 90px;
+  /* The left border for this cell will be handled by the general td/th rule's
+     left border as it's not the very first column. */
 }
 
 small {
@@ -766,14 +771,14 @@ small {
   .schedule-table-wrapper td:first-child {
     width: 80px;
     min-width: 80px;
-    box-shadow: 1px 0 0 0 var(--color-border-medium), -1px 0 0 0 var(--color-border-medium);
+    border-left: 1px solid var(--color-border-medium);
   }
 
   .weekly-view-active .sticky-col-day,
   .weekly-view-active .sticky-col-day-cell {
     width: 80px;
     min-width: 80px;
-    box-shadow: 1px 0 0 0 var(--color-border-medium), -1px 0 0 0 var(--color-border-medium);
+    border-left: 1px solid var(--color-border-medium);
   }
 
   .weekly-view-active .sticky-col-slot,
@@ -781,7 +786,7 @@ small {
     left: 80px; /* Update left based on new day column width */
     width: 80px;
     min-width: 80px;
-    box-shadow: 1px 0 0 0 var(--color-border-medium), -1px 0 0 0 var(--color-border-medium);
+    /* Borders for these are handled by the general td/th rule and the left offset */
   }
 
   .rules-panel {
@@ -837,14 +842,14 @@ small {
   .schedule-table-wrapper td:first-child {
     width: 70px;
     min-width: 70px;
-    box-shadow: 1px 0 0 0 var(--color-border-medium), -1px 0 0 0 var(--color-border-medium);
+    border-left: 1px solid var(--color-border-medium);
   }
 
   .weekly-view-active .sticky-col-day,
   .weekly-view-active .sticky-col-day-cell {
     width: 70px;
     min-width: 70px;
-    box-shadow: 1px 0 0 0 var(--color-border-medium), -1px 0 0 0 var(--color-border-medium);
+    border-left: 1px solid var(--color-border-medium);
   }
 
   .weekly-view-active .sticky-col-slot,
@@ -852,7 +857,7 @@ small {
     left: 70px; /* Update left based on new day column width */
     width: 70px;
     min-width: 70px;
-    box-shadow: 1px 0 0 0 var(--color-border-medium), -1px 0 0 0 var(--color-border-medium);
+    /* Borders for these are handled by the general td/th rule and the left offset */
   }
 }
 
@@ -878,14 +883,14 @@ small {
   .schedule-table-wrapper td:first-child {
     width: 60px;
     min-width: 60px;
-    box-shadow: 1px 0 0 0 var(--color-border-medium), -1px 0 0 0 var(--color-border-medium);
+    border-left: 1px solid var(--color-border-medium);
   }
 
   .weekly-view-active .sticky-col-day,
   .weekly-view-active .sticky-col-day-cell {
     width: 60px;
     min-width: 60px;
-    box-shadow: 1px 0 0 0 var(--color-border-medium), -1px 0 0 0 var(--color-border-medium);
+    border-left: 1px solid var(--color-border-medium);
   }
 
   .weekly-view-active .sticky-col-slot,
@@ -893,9 +898,10 @@ small {
     left: 60px; /* Update left based on new day column width */
     width: 60px;
     min-width: 60px;
-    box-shadow: 1px 0 0 0 var(--color-border-medium), -1px 0 0 0 var(--color-border-medium);
+    /* Borders for these are handled by the general td/th rule and the left offset */
   }
 }
+
 
 
 
