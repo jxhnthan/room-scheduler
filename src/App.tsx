@@ -661,14 +661,30 @@ export default function App() {
   };
   // --- End Auto-Roster Function ---
 
-  /**
+   /**
    * Handles the PNG capture and download of the schedule table.
    */
   const saveScheduleAsPNG = async () => {
     if (scheduleTableRef.current) {
       setSavedMsg("Capturing schedule as image...");
+      
+      const tableElement = scheduleTableRef.current;
+      
+      // Store original styles so we can revert them later
+      const originalMaxHeight = tableElement.style.maxHeight;
+      const originalOverflowY = tableElement.style.overflowY;
+
       try {
-        const canvas = await html2canvas(scheduleTableRef.current, {
+        // Temporarily adjust styles for full capture
+        // Remove max-height and set overflow-y to visible to show all content
+        tableElement.style.maxHeight = 'none'; 
+        tableElement.style.overflowY = 'visible'; 
+
+        // Optional: A small delay can sometimes help ensure the DOM has reflowed
+        // before html2canvas takes the snapshot, though often not necessary.
+        // await new Promise(resolve => setTimeout(resolve, 50)); 
+
+        const canvas = await html2canvas(tableElement, {
           scale: 2, // Capture at 2x resolution for better clarity
           useCORS: true, // Set to true if you load images from external domains
           logging: false, // Set to true for debugging html2canvas issues
@@ -693,8 +709,14 @@ export default function App() {
       } catch (error) {
         console.error("Error saving schedule as PNG:", error);
         setSavedMsg("Error: Could not save schedule as PNG.");
+      } finally {
+        // IMPORTANT: Restore original styles, ensuring the layout returns to normal
+        if (scheduleTableRef.current) {
+          scheduleTableRef.current.style.maxHeight = originalMaxHeight;
+          scheduleTableRef.current.style.overflowY = originalOverflowY;
+        }
+        setTimeout(() => setSavedMsg(""), 5000); // Clear message after 5 seconds
       }
-      setTimeout(() => setSavedMsg(""), 5000);
     } else {
       setSavedMsg("Error: Schedule table not found for PNG capture.");
       setTimeout(() => setSavedMsg(""), 5000);
