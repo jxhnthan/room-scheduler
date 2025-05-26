@@ -44,7 +44,7 @@
   --color-error-text: #991b1b;
 
   /* UHC Blocked Cell Colors */
-  --color-blocked-uhc-bg: #4a5759; /* Lighter grey for blocked cells */
+  --color-blocked-uhc-bg: #f9f9f9; /* Lighter grey for blocked cells */
   --color-blocked-uhc-border: #ececec; /* Slightly darker border */
   --color-blocked-uhc-text: #a0a0a0; /* Dimmed text color */
 
@@ -520,7 +520,8 @@ small {
   min-height: 35px;
   text-align: left; /* Allow therapist name to align left within squeezed cell */
   cursor: grab; /* Enable dragging out */
-  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.15s ease,
+    box-shadow 0.2s ease;
 }
 
 .assigned-therapist:hover {
@@ -535,7 +536,8 @@ small {
   transform: scale(0.98);
 }
 
-.assigned-therapist-clear-btn { /* Renamed from .clear-slot-btn */
+.assigned-therapist-clear-btn {
+  /* Renamed from .clear-slot-btn */
   background: none;
   border: none;
   color: var(--color-error-text);
@@ -565,7 +567,8 @@ small {
 }
 
 /* Ensure text color is also dimmed for blocked cells */
-.blocked-uhc span { /* Targeting any text within the cell, adjust if needed */
+.blocked-uhc span {
+  /* Targeting any text within the cell, adjust if needed */
   color: var(--color-blocked-uhc-text);
 }
 
@@ -575,7 +578,12 @@ small {
   cursor: grab; /* Restore grab cursor for dragging out */
   /* Using rgba with transparency so the greyed-out cell background shows through */
   background-color: rgba(var(--color-primary-light), 0.5); /* Semi-transparent background for therapist */
-  color: rgba(0, 61, 124, 0.7); /* Using NUS Blue rgba directly or create a new var if needed for transparency */
+  color: rgba(
+    0,
+    61,
+    124,
+    0.7
+  ); /* Using NUS Blue rgba directly or create a new var if needed for transparency */
   box-shadow: none; /* Remove shadow to blend in */
 }
 .blocked-uhc .assigned-therapist:hover {
@@ -588,7 +596,6 @@ small {
   transform: scale(0.98);
 }
 
-
 /* === Buttons & Messages === */
 .button-group {
   margin-top: 1.25rem;
@@ -600,7 +607,8 @@ small {
 
 .copy-btn,
 .reset-btn,
-.save-png-btn { /* Apply common styling to all action buttons */
+.save-png-btn {
+  /* Apply common styling to all action buttons */
   padding: 0.75rem 1.25rem;
   color: var(--nus-white);
   border: none;
@@ -705,24 +713,6 @@ small {
   font-size: 1.25em;
   border-bottom: 2px solid var(--color-primary-light);
   padding-bottom: 10px;
-  display: flex; /* Allow content to be aligned */
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* Collapsible Panel content style */
-.collapsible-content {
-  overflow: hidden;
-  transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
-  max-height: 500px; /* Max height when open, adjust as needed */
-  opacity: 1;
-}
-
-.collapsible-content.collapsed {
-  max-height: 0;
-  opacity: 0;
-  padding-top: 0;
-  padding-bottom: 0;
 }
 
 .therapist-count-item {
@@ -789,21 +779,6 @@ small {
   font-weight: 500;
   color: var(--color-text-mid);
   border: 1px solid #e2e8f0;
-}
-
-.toggle-collapse-btn {
-  background: none;
-  border: none;
-  font-size: 1.2rem;
-  color: var(--color-primary);
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  padding: 0;
-  line-height: 1;
-}
-
-.toggle-collapse-btn.collapsed {
-  transform: rotate(-90deg); /* Rotate arrow when collapsed */
 }
 
 /* === Responsive Adjustments === */
@@ -896,7 +871,7 @@ small {
     font-size: 0.7rem; /* Even smaller font */
   }
   .assigned-therapist {
-    font-size: 0.65rem;
+    font-size: 0.75rem;
   }
 
   /* Adjust sticky column widths and left offsets for smaller screens */
@@ -931,7 +906,8 @@ small {
     min-height: 25px;
     font-size: 0.6rem;
   }
-  .assigned-therapist-clear-btn { /* Use the new class name */
+  .assigned-therapist-clear-btn {
+    /* Use the new class name */
     font-size: 0.8em;
   }
   /* Further squeeze down cell sizes if needed */
