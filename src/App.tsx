@@ -5,13 +5,13 @@ import "./App.css";
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 const slots = ["AM", "PM"] as const; // 'as const' for stricter type inference
 const rooms = [
-  "Rm A",
-  "Rm B",
-  "Rm C",
-  "Rm D",
+  "Counselling Room A",
+  "Counselling Room B",
+  "Counselling Room C",
+  "Counselling Room D",
   "Biz 2",
   "CLB",
-  "L4 Pod",
+  "Level 4 Pod",
   "UHC",
   "BTC",
 ];
@@ -124,8 +124,7 @@ export default function App() {
   const [currentTime, setCurrentTime] = useState<string>("");
   // State to control visibility of the rules configuration panel
   const [showRulesPanel, setShowRulesPanel] = useState(false);
-  // NEW State for collapsible room overview panel
-  const [isRoomOverviewCollapsed, setIsRoomOverviewCollapsed] = useState(false);
+  // Removed: const [isRoomOverviewCollapsed, setIsRoomOverviewCollapsed] = useState(false);
 
   // State for therapist availability rules, loaded from localStorage or initialized
   const [therapistRules, setTherapistRules] = useState<TherapistAvailabilityRules>(() => {
@@ -763,21 +762,10 @@ export default function App() {
             </div>
           ))}
 
-          {/* Therapist Counts Panel - Now Collapsible */}
+          {/* Therapist Counts Panel - Collapsible functionality removed */}
           <div className="therapist-counts-panel">
-            <h3>
-              Therapist Counts
-              <button
-                className={`toggle-collapse-btn ${isRoomOverviewCollapsed ? "collapsed" : ""}`}
-                onClick={() => setIsRoomOverviewCollapsed(!isRoomOverviewCollapsed)}
-                aria-expanded={!isRoomOverviewCollapsed}
-                aria-controls="room-overview-content"
-              >
-                {/* A simple arrow or chevron icon */}
-                {isRoomOverviewCollapsed ? "▶" : "▼"}
-              </button>
-            </h3>
-            <div id="room-overview-content" className={`collapsible-content ${isRoomOverviewCollapsed ? "collapsed" : ""}`}>
+            <h3>Therapist Counts</h3> {/* Simple header without toggle button */}
+            <div> {/* This div directly contains the map, no collapsible classes */}
               {Object.entries(therapistSlotCounts).map(([therapistName, counts]) => (
                 <div key={therapistName} className="therapist-count-item">
                   <div className="therapist-summary">
@@ -844,9 +832,9 @@ export default function App() {
                             {assignedTherapist ? (
                               <div
                                 className="assigned-therapist"
-                                draggable={isBlocked ? "false" : "true"} /* Can't drag into UHC, but can drag OUT if already assigned */
-                                onDragStart={isBlocked ? undefined : (e) => onDragStartCell(e, assignedTherapist, day, slot, room)}
-                                onDoubleClick={isBlocked ? undefined : () => clearSlot(day, slot, room)} // Double-click to clear
+                                draggable={true} /* Always draggable out, even from UHC */
+                                onDragStart={(e) => onDragStartCell(e, assignedTherapist, day, slot, room)}
+                                onDoubleClick={() => clearSlot(day, slot, room)} // Double-click to clear
                               >
                                 {assignedTherapist}
                                 {/* Clear button (X) */}
