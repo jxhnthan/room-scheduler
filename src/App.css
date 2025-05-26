@@ -420,7 +420,8 @@ th {
   background-color: var(--color-background-table-header); /* for header */
   width: 90px; /* Explicit width for predictable sticky behavior */
   min-width: 90px;
-  border-right: 1px solid var(--color-border-medium);
+  /* border-right: 1px solid var(--color-border-medium); <-- REMOVED */
+  box-shadow: 1px 0 0 0 var(--color-border-medium); /* ADDED: Simulate right border */
 }
 .schedule-table-wrapper td:first-child {
   background-color: var(--color-background-white); /* for data cells */
@@ -435,7 +436,8 @@ th {
   background-color: var(
     --color-background-table-header
   ); /* Ensure solid background */
-  border-right: 1px solid var(--color-border-medium);
+  /* border-right: 1px solid var(--color-border-medium); <-- REMOVED */
+  box-shadow: 1px 0 0 0 var(--color-border-medium); /* ADDED: Simulate right border */
   width: 90px; /* Explicit width */
   min-width: 90px;
 }
@@ -445,7 +447,8 @@ th {
   left: 0;
   z-index: 12; /* Highest z-index for the outermost sticky column */
   background-color: var(--color-background-white); /* Ensure solid background */
-  border-right: 1px solid var(--color-border-medium);
+  /* border-right: 1px solid var(--color-border-medium); <-- REMOVED */
+  box-shadow: 1px 0 0 0 var(--color-border-medium); /* ADDED: Simulate right border */
   width: 90px; /* Explicit width */
   min-width: 90px;
 }
@@ -457,7 +460,8 @@ th {
   background-color: var(
     --color-background-table-header
   ); /* Ensure solid background */
-  border-right: 1px solid var(--color-border-medium);
+  /* border-right: 1px solid var(--color-border-medium); <-- REMOVED */
+  box-shadow: 1px 0 0 0 var(--color-border-medium); /* ADDED: Simulate right border */
   width: 90px; /* Explicit width */
   min-width: 90px;
 }
@@ -467,7 +471,8 @@ th {
   left: 90px; /* This must be the exact width of .sticky-col-day-cell */
   z-index: 11;
   background-color: var(--color-background-white); /* Ensure solid background */
-  border-right: 1px solid var(--color-border-medium);
+  /* border-right: 1px solid var(--color-border-medium); <-- REMOVED */
+  box-shadow: 1px 0 0 0 var(--color-border-medium); /* ADDED: Simulate right border */
   width: 90px; /* Explicit width */
   min-width: 90px;
 }
@@ -761,6 +766,7 @@ small {
   .weekly-view-active .sticky-col-day-cell {
     width: 80px;
     min-width: 80px;
+    box-shadow: 1px 0 0 0 var(--color-border-medium); /* Adjusted box-shadow for responsive */
   }
 
   .weekly-view-active .sticky-col-slot,
@@ -768,6 +774,7 @@ small {
     left: 80px; /* Update left based on new day column width */
     width: 80px;
     min-width: 80px;
+    box-shadow: 1px 0 0 0 var(--color-border-medium); /* Adjusted box-shadow for responsive */
   }
 
   .rules-panel {
@@ -825,6 +832,7 @@ small {
   .weekly-view-active .sticky-col-day-cell {
     width: 70px;
     min-width: 70px;
+    box-shadow: 1px 0 0 0 var(--color-border-medium); /* Adjusted box-shadow for responsive */
   }
 
   .weekly-view-active .sticky-col-slot,
@@ -832,6 +840,7 @@ small {
     left: 70px; /* Update left based on new day column width */
     width: 70px;
     min-width: 70px;
+    box-shadow: 1px 0 0 0 var(--color-border-medium); /* Adjusted box-shadow for responsive */
   }
 }
 
@@ -859,6 +868,7 @@ small {
   .weekly-view-active .sticky-col-day-cell {
     width: 60px;
     min-width: 60px;
+    box-shadow: 1px 0 0 0 var(--color-border-medium); /* Adjusted box-shadow for responsive */
   }
 
   .weekly-view-active .sticky-col-slot,
@@ -866,6 +876,7 @@ small {
     left: 60px; /* Update left based on new day column width */
     width: 60px;
     min-width: 60px;
+    box-shadow: 1px 0 0 0 var(--color-border-medium); /* Adjusted box-shadow for responsive */
   }
 }
 
