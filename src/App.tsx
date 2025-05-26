@@ -11,8 +11,8 @@ const rooms = [
   "Counselling Room D",
   "Biz 2",
   "CLB",
-  "Level 4 Pod"
-  "UHC"
+  "Level 4 Pod",
+  "UHC",
   "BTC"
 ];
 const therapists = [
