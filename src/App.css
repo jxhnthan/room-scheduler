@@ -316,7 +316,9 @@ h1 {
   display: flex;
   gap: 2rem;
   flex-wrap: wrap;
-  transition: transform 0.3s ease-out; /* Smooth shift when panel opens */
+  transition: transform 0.3s ease-out;
+  /* NEW: Prevent flex items from stretching to the tallest item's height */
+  align-items: flex-start;
 }
 
 /* When rules panel is open, shift the main layout content */
@@ -331,12 +333,15 @@ h1 {
   flex: 1 1 280px;
   border: 1px solid var(--color-border-light);
   padding: 1.25rem;
-  overflow-y: auto; /* Enable scrolling for therapist list and counts */
+  overflow-y: auto; /* Already here, keeps internal scrolling */
   background: var(--color-background-list);
   border-radius: 8px;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
+  /* NEW: Set a maximum height for the therapist list panel */
+  /* This value (e.g., 200px) needs adjustment based on your header/footer height */
+  max-height: calc(100vh - 200px); /* Example: 100% viewport height minus header/controls/margins */
 }
 
 .therapists-list h3 {
@@ -382,7 +387,10 @@ h1 {
 /* === Schedule Table === */
 .schedule-table-wrapper {
   flex: 3 1 600px;
-  overflow-x: auto; /* Keep horizontal scrolling for now, it's safer for fixed table layout */
+  overflow-x: auto; /* Keep horizontal scrolling */
+  /* NEW: Enable vertical scrolling for the table and set a max-height */
+  overflow-y: auto;
+  max-height: calc(100vh - 200px); /* Match the therapists-list max-height for visual consistency */
   -webkit-overflow-scrolling: touch;
 }
 
