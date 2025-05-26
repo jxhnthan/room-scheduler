@@ -377,38 +377,39 @@ h1 {
 /* === Schedule Table === */
 .schedule-table-wrapper {
   flex: 3 1 600px;
-  overflow-x: auto;
+  /* REMOVE overflow-x: auto; to disable horizontal scrolling */
+  /* overflow-x: auto; */
   -webkit-overflow-scrolling: touch;
 }
 
 table {
-  width: 100%;
-  /* --- SIMPLER BORDER SOLUTION: border-collapse: separate with spacing --- */
-  border-collapse: separate; /* This is KEY for explicit border control */
-  border-spacing: 0; /* No space between cells, borders are drawn on cells themselves */
-  border-top: 1px solid var(--color-border-medium); /* Top outer border of the table */
-  border-left: 1px solid var(--color-border-medium); /* Left outer border of the table */
+  width: 100%; /* Important: makes the table fill available width */
+  table-layout: fixed; /* NEW: Helps columns distribute width evenly */
+  border-collapse: separate;
+  border-spacing: 0;
+  border-top: 1px solid var(--color-border-medium);
+  border-left: 1px solid var(--color-border-medium);
   text-align: center;
-  min-width: fit-content;
+  /* REMOVE min-width: fit-content; */
 }
 
 th,
 td {
-  /* Apply borders to the right and bottom of each cell.
-     This creates a grid where each cell "owns" its right and bottom lines. */
   border-right: 1px solid var(--color-border-medium);
   border-bottom: 1px solid var(--color-border-medium);
-  border-top: none; /* Explicitly remove top/left as table handles outer and cells handle inner */
-  border-left: none; /* Explicitly remove top/left as table handles outer and cells handle inner */
+  border-top: none;
+  border-left: none;
 
   padding: 0.5rem;
-  min-width: 90px;
-  max-width: 150px;
+  /* REMOVE min-width: 90px; or set to a very small value */
+  /* min-width: 90px; */
+  /* max-width: 150px; -- this will also constrain shrinking */
   vertical-align: middle;
   font-size: 0.9rem;
-  background-color: var(
-    --color-background-white
-  ); /* Ensure all cells have a solid background */
+  background-color: var(--color-background-white);
+  /* NEW: Allow text to wrap if cell is too small */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 th {
@@ -418,7 +419,6 @@ th {
   position: sticky;
   top: 0;
   z-index: 10;
-  /* With border-collapse: separate, no need for box-shadow on sticky headers */
   box-shadow: none;
 }
 
@@ -427,29 +427,26 @@ th {
 .schedule-table-wrapper td:first-child {
   position: sticky;
   left: 0;
-  z-index: 11; /* Higher than regular cells, lower than multiple sticky columns */
-  background-color: var(--color-background-table-header); /* for header */
-  width: 90px; /* Explicit width for predictable sticky behavior */
-  min-width: 90px;
-  /* Borders for sticky elements are now handled by the general th/td rule,
-     but we might need to re-add a left border if first-child isn't picking it up,
-     or if the table's left border is not sufficient (which it should be).
-     Explicitly add it to ensure it's there. */
-  border-left: 1px solid var(--color-border-medium); /* Explicit left border for the very first column */
+  z-index: 11;
+  background-color: var(--color-background-table-header);
+  /* Use a relative width for the first column if others are flexible */
+  width: 10%; /* NEW: Give it a percentage of the table width */
+  min-width: 60px; /* A minimum width might still be necessary for readability */
+  border-left: 1px solid var(--color-border-medium);
 }
 .schedule-table-wrapper td:first-child {
-  background-color: var(--color-background-white); /* for data cells */
+  background-color: var(--color-background-white);
 }
 
 /* New sticky columns for Weekly View - Applied when .weekly-view-active is present */
 .weekly-view-active .sticky-col-day {
   position: sticky;
   left: 0;
-  z-index: 12; /* Highest z-index for the outermost sticky column */
+  z-index: 12;
   background-color: var(--color-background-table-header);
-  width: 90px; /* Explicit width */
-  min-width: 90px;
-  border-left: 1px solid var(--color-border-medium); /* Explicit left border */
+  width: 10%; /* NEW: Percentage width */
+  min-width: 60px; /* Minimum width */
+  border-left: 1px solid var(--color-border-medium);
 }
 
 .weekly-view-active .sticky-col-day-cell {
@@ -457,31 +454,27 @@ th {
   left: 0;
   z-index: 12;
   background-color: var(--color-background-white);
-  width: 90px;
-  min-width: 90px;
-  border-left: 1px solid var(--color-border-medium); /* Explicit left border */
+  width: 10%; /* NEW: Percentage width */
+  min-width: 60px; /* Minimum width */
+  border-left: 1px solid var(--color-border-medium);
 }
 
 .weekly-view-active .sticky-col-slot {
   position: sticky;
-  left: 90px; /* This must be the exact width of .sticky-col-day */
-  z-index: 11; /* Lower than day column, higher than normal cells */
+  left: 10%; /* NEW: Adjust left based on percentage width of .sticky-col-day */
+  z-index: 11;
   background-color: var(--color-background-table-header);
-  width: 90px;
-  min-width: 90px;
-  /* The left border for this cell will be handled by the general td/th rule's
-     left border as it's not the very first column. */
+  width: 10%; /* NEW: Percentage width */
+  min-width: 60px; /* Minimum width */
 }
 
 .weekly-view-active .sticky-col-slot-cell {
   position: sticky;
-  left: 90px; /* This must be the exact width of .sticky-col-day-cell */
+  left: 10%; /* NEW: Adjust left based on percentage width of .sticky-col-day-cell */
   z-index: 11;
   background-color: var(--color-background-white);
-  width: 90px;
-  min-width: 90px;
-  /* The left border for this cell will be handled by the general td/th rule's
-     left border as it's not the very first column. */
+  width: 10%; /* NEW: Percentage width */
+  min-width: 60px; /* Minimum width */
 }
 
 small {
@@ -524,6 +517,7 @@ small {
   align-items: center;
   gap: 0.2em;
   min-height: 35px;
+  text-align: left; /* NEW: Allow therapist name to align left within squeezed cell */
 }
 
 .clear-slot-btn {
@@ -740,8 +734,8 @@ small {
   }
 
   .therapists-list {
-    max-height: none; /* Allow list to expand vertically */
-    flex: 1 1 auto; /* Allow list to take up necessary space */
+    max-height: none;
+    flex: 1 1 auto;
   }
 
   .day-picker {
@@ -752,8 +746,8 @@ small {
   th,
   td {
     padding: 0.4rem;
-    min-width: 80px;
     font-size: 0.8rem;
+    /* min-width: 80px; - removed */
   }
 
   small {
@@ -769,35 +763,23 @@ small {
   /* Adjust sticky column widths and left offsets for smaller screens */
   .schedule-table-wrapper th:first-child,
   .schedule-table-wrapper td:first-child {
-    width: 80px;
-    min-width: 80px;
+    width: 12%; /* Adjusted percentage */
+    min-width: 50px;
     border-left: 1px solid var(--color-border-medium);
   }
 
   .weekly-view-active .sticky-col-day,
   .weekly-view-active .sticky-col-day-cell {
-    width: 80px;
-    min-width: 80px;
+    width: 12%; /* Adjusted percentage */
+    min-width: 50px;
     border-left: 1px solid var(--color-border-medium);
   }
 
   .weekly-view-active .sticky-col-slot,
   .weekly-view-active .sticky-col-slot-cell {
-    left: 80px; /* Update left based on new day column width */
-    width: 80px;
-    min-width: 80px;
-    /* Borders for these are handled by the general td/th rule and the left offset */
-  }
-
-  .rules-panel {
-    width: 100vw;
-    max-width: 100vw;
-  }
-  .container.rules-panel-open {
-    margin-right: auto;
-  }
-  .layout.layout-shifted {
-    transform: translateX(0);
+    left: 12%; /* Adjusted left based on new day column width */
+    width: 12%; /* Adjusted percentage */
+    min-width: 50px;
   }
 }
 
@@ -833,75 +815,76 @@ small {
   }
   th,
   td {
-    min-width: 70px;
-    font-size: 0.75rem;
+    font-size: 0.7rem; /* Even smaller font */
+  }
+  .assigned-therapist {
+    font-size: 0.65rem;
   }
 
   /* Adjust sticky column widths and left offsets for smaller screens */
   .schedule-table-wrapper th:first-child,
   .schedule-table-wrapper td:first-child {
-    width: 70px;
-    min-width: 70px;
+    width: 15%; /* Adjusted percentage */
+    min-width: 40px;
     border-left: 1px solid var(--color-border-medium);
   }
 
   .weekly-view-active .sticky-col-day,
   .weekly-view-active .sticky-col-day-cell {
-    width: 70px;
-    min-width: 70px;
+    width: 15%; /* Adjusted percentage */
+    min-width: 40px;
     border-left: 1px solid var(--color-border-medium);
   }
 
   .weekly-view-active .sticky-col-slot,
   .weekly-view-active .sticky-col-slot-cell {
-    left: 70px; /* Update left based on new day column width */
-    width: 70px;
-    min-width: 70px;
-    /* Borders for these are handled by the general td/th rule and the left offset */
+    left: 15%; /* Adjusted left based on new day column width */
+    width: 15%; /* Adjusted percentage */
+    min-width: 40px;
   }
 }
 
 @media (max-width: 480px) {
   .therapist {
-    padding: 0.4rem 0.6rem;
-    font-size: 0.85rem;
+    padding: 0.3rem 0.5rem;
+    font-size: 0.75rem;
   }
   .assigned-therapist {
-    min-height: 30px;
-    font-size: 0.7rem;
+    min-height: 25px;
+    font-size: 0.6rem;
   }
   .clear-slot-btn {
-    font-size: 0.9em;
+    font-size: 0.8em;
   }
+  /* Further squeeze down cell sizes if needed */
   th,
   td {
-    min-width: 60px;
+    padding: 0.3rem;
+    font-size: 0.65rem;
   }
 
   /* Adjust sticky column widths and left offsets for smallest screens */
   .schedule-table-wrapper th:first-child,
   .schedule-table-wrapper td:first-child {
-    width: 60px;
-    min-width: 60px;
+    width: 18%; /* Adjusted percentage */
+    min-width: 30px;
     border-left: 1px solid var(--color-border-medium);
   }
 
   .weekly-view-active .sticky-col-day,
   .weekly-view-active .sticky-col-day-cell {
-    width: 60px;
-    min-width: 60px;
+    width: 18%; /* Adjusted percentage */
+    min-width: 30px;
     border-left: 1px solid var(--color-border-medium);
   }
 
   .weekly-view-active .sticky-col-slot,
   .weekly-view-active .sticky-col-slot-cell {
-    left: 60px; /* Update left based on new day column width */
-    width: 60px;
-    min-width: 60px;
-    /* Borders for these are handled by the general td/th rule and the left offset */
+    left: 18%; /* Adjusted left based on new day column width */
+    width: 18%; /* Adjusted percentage */
+    min-width: 30px;
   }
 }
-
 
 
 
