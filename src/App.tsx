@@ -12,6 +12,8 @@ const rooms = [
   "Biz 2",
   "CLB",
   "Level 4 Pod"
+  "UHC"
+  "BTC"
 ];
 const therapists = [
   "Dominic Yeo", "Kirsty Png", "Soon Jiaying", "Andrew Lim",
