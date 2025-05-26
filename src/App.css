@@ -44,7 +44,7 @@
   --color-error-text: #991b1b;
 
   /* UHC Blocked Cell Colors */
-  --color-blocked-uhc-bg: #f9f9f9; /* Lighter grey for blocked cells */
+  --color-blocked-uhc-bg: #4a5759; /* Lighter grey for blocked cells */
   --color-blocked-uhc-border: #ececec; /* Slightly darker border */
   --color-blocked-uhc-text: #a0a0a0; /* Dimmed text color */
 
