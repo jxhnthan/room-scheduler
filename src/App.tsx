@@ -13,12 +13,19 @@ const rooms = [
   "CLB",
   "Level 4 Pod",
   "UHC",
-  "BTC"
+  "BTC",
 ];
 const therapists = [
-  "Dominic Yeo", "Kirsty Png", "Soon Jiaying", "Andrew Lim",
-  "Janice Leong", "Oliver Tan", "Claudia Ahl", "Seanna Neo",
-  "Xiao Hui", "Tika Zainal",
+  "Dominic Yeo",
+  "Kirsty Png",
+  "Soon Jiaying",
+  "Andrew Lim",
+  "Janice Leong",
+  "Oliver Tan",
+  "Claudia Ahl",
+  "Seanna Neo",
+  "Xiao Hui",
+  "Tika Zainal",
 ];
 
 type SlotType = typeof slots[number]; // Type alias for 'AM' | 'PM'
@@ -34,8 +41,8 @@ type SchedulerState = {
 type TherapistAvailabilityRules = {
   [therapistName: string]: {
     availableDays: string[]; // Days they are generally available for office work
-    wfhDays: string[];       // Days designated as Work From Home (cannot be assigned to a room)
-    availableSlots: SlotType[];// Slots they are generally available (e.g., AM, PM)
+    wfhDays: string[]; // Days designated as Work From Home (cannot be assigned to a room)
+    availableSlots: SlotType[]; // Slots they are generally available (e.g., AM, PM)
     maxConsecutiveSlotsPerDay: 1 | 2; // Max 1 (AM or PM) or 2 (both AM & PM)
   };
 };
@@ -75,7 +82,7 @@ function normalizeSchedule(schedule: Partial<SchedulerState>): SchedulerState {
  */
 function initializeDefaultAvailability(): TherapistAvailabilityRules {
   const defaultRules: TherapistAvailabilityRules = {};
-  therapists.forEach(therapist => {
+  therapists.forEach((therapist) => {
     defaultRules[therapist] = {
       availableDays: [...days],
       wfhDays: [],
@@ -104,7 +111,9 @@ function generateId(): string {
 
 export default function App() {
   // State for the main schedule data
-  const [schedule, setSchedule] = useState<SchedulerState>(() => normalizeSchedule({}));
+  const [schedule, setSchedule] = useState<SchedulerState>(() =>
+    normalizeSchedule({})
+  );
   // State for messages (e.g., save confirmation)
   const [savedMsg, setSavedMsg] = useState("");
   // State to control weekly or daily view
@@ -118,19 +127,21 @@ export default function App() {
 
   // State for therapist availability rules, loaded from localStorage or initialized
   const [therapistRules, setTherapistRules] = useState<TherapistAvailabilityRules>(() => {
-    const savedRules = localStorage.getItem('therapist_rules');
+    const savedRules = localStorage.getItem("therapist_rules");
     if (savedRules) {
       try {
         const parsedRules = JSON.parse(savedRules);
         // Ensure all therapists and new rule fields are present after parsing
-        therapists.forEach(t => {
+        therapists.forEach((t) => {
           if (!parsedRules[t]) {
             parsedRules[t] = initializeDefaultAvailability()[t];
           } else {
             // Initialize new rule fields if they were missing from older saved data
             if (parsedRules[t].wfhDays === undefined) parsedRules[t].wfhDays = [];
-            if (parsedRules[t].maxConsecutiveSlotsPerDay === undefined) parsedRules[t].maxConsecutiveSlotsPerDay = 2;
-            if (!Array.isArray(parsedRules[t].availableSlots)) { // Ensure it's an array
+            if (parsedRules[t].maxConsecutiveSlotsPerDay === undefined)
+              parsedRules[t].maxConsecutiveSlotsPerDay = 2;
+            if (!Array.isArray(parsedRules[t].availableSlots)) {
+              // Ensure it's an array
               parsedRules[t].availableSlots = [...slots];
             }
           }
@@ -153,6 +164,23 @@ export default function App() {
   // Ref for the schedule table container to capture it as an image
   const scheduleTableRef = useRef<HTMLDivElement>(null);
 
+  /**
+   * Determines if a specific UHC cell should be visually greyed out
+   * and blocked for assignment based on the UHC room restriction rules.
+   * @param day - The day of the slot.
+   * @param slot - The time slot (AM/PM).
+   * @param room - The room of the slot.
+   * @returns True if the UHC cell should be greyed out and blocked, false otherwise.
+   */
+  const isUHCBlocked = (day: string, slot: SlotType, room: string): boolean => {
+    if (room === "UHC") {
+      // UHC is only allowed on Wed AM and Thu PM
+      const allowedWedAM = day === "Wed" && slot === "AM";
+      const allowedThuPM = day === "Thu" && slot === "PM";
+      return !(allowedWedAM || allowedThuPM);
+    }
+    return false; // Not UHC room, so not blocked by this specific UHC rule
+  };
 
   /**
    * Effect to load schedule from localStorage on component mount.
@@ -181,7 +209,7 @@ export default function App() {
    * Effect to save therapist rules to localStorage whenever they change.
    */
   useEffect(() => {
-    localStorage.setItem('therapist_rules', JSON.stringify(therapistRules));
+    localStorage.setItem("therapist_rules", JSON.stringify(therapistRules));
   }, [therapistRules]); // Dependency array: runs when therapistRules state changes
 
   /**
@@ -191,14 +219,14 @@ export default function App() {
     const updateTime = () => {
       const now = new Date();
       const options: Intl.DateTimeFormatOptions = {
-        weekday: 'long', // e.g., 'Monday'
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false // 24-hour format
+        weekday: "long", // e.g., 'Monday'
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false, // 24-hour format
       };
       setCurrentTime(now.toLocaleDateString(undefined, options));
     };
@@ -216,12 +244,12 @@ export default function App() {
   useEffect(() => {
     const calculateTherapistCounts = () => {
       const newCounts: TherapistCounts = {};
-      therapists.forEach(t => {
+      therapists.forEach((t) => {
         newCounts[t] = {
           totalSlots: 0,
           roomDistribution: {},
         };
-        rooms.forEach(r => newCounts[t].roomDistribution[r] = 0);
+        rooms.forEach((r) => (newCounts[t].roomDistribution[r] = 0));
       });
 
       // Iterate through the current schedule to count assignments
@@ -284,11 +312,18 @@ export default function App() {
   function onDropCell(
     e: React.DragEvent<HTMLTableCellElement>,
     toDay: string,
-    toSlot: string,
+    toSlot: SlotType, // Use SlotType here
     toRoom: string
   ) {
     e.preventDefault();
     e.currentTarget.classList.remove("drag-over"); // Remove drag-over styling
+
+    // Prevent dropping into blocked UHC slots
+    if (isUHCBlocked(toDay, toSlot, toRoom)) {
+      setSavedMsg("Cannot assign to UHC at this time.");
+      setTimeout(() => setSavedMsg(""), 3000);
+      return;
+    }
 
     const therapistName = e.dataTransfer.getData("therapistName");
     const sourceType = e.dataTransfer.getData("sourceType");
@@ -304,9 +339,9 @@ export default function App() {
         const { day: fromDay, slot: fromSlot, room: fromRoom } = JSON.parse(sourceLocationData);
         // Only clear if moving to a different slot/room, not dropping back onto itself
         if (!(fromDay === toDay && fromSlot === toSlot && fromRoom === toRoom)) {
-            if (newSchedule[fromDay]?.[fromSlot]?.[fromRoom] === therapistName) {
-              newSchedule[fromDay][fromSlot][fromRoom] = "";
-            }
+          if (newSchedule[fromDay]?.[fromSlot]?.[fromRoom] === therapistName) {
+            newSchedule[fromDay][fromSlot][fromRoom] = "";
+          }
         }
       }
       // Assign the therapist to the target cell
@@ -321,7 +356,17 @@ export default function App() {
    */
   function onDragOverCell(e: React.DragEvent<HTMLTableCellElement>) {
     e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
+    const targetCell = e.currentTarget;
+    const day = targetCell.dataset.day;
+    const slot = targetCell.dataset.slot as SlotType;
+    const room = targetCell.dataset.room;
+
+    // Do not allow drag over on blocked UHC cells
+    if (day && slot && room && isUHCBlocked(day, slot, room)) {
+      e.dataTransfer.dropEffect = "none"; // Disallow drop
+    } else {
+      e.dataTransfer.dropEffect = "move"; // Allow drop
+    }
   }
 
   /**
@@ -330,7 +375,15 @@ export default function App() {
    */
   function onDragEnterCell(e: React.DragEvent<HTMLTableCellElement>) {
     e.preventDefault();
-    e.currentTarget.classList.add("drag-over");
+    const targetCell = e.currentTarget;
+    const day = targetCell.dataset.day;
+    const slot = targetCell.dataset.slot as SlotType;
+    const room = targetCell.dataset.room;
+
+    // Only add drag-over class if not a blocked UHC cell
+    if (day && slot && room && !isUHCBlocked(day, slot, room)) {
+      e.currentTarget.classList.add("drag-over");
+    }
   }
 
   /**
@@ -405,48 +458,48 @@ export default function App() {
    * @param value - The specific day or slot value.
    * @param isChecked - Boolean indicating if the checkbox is checked.
    */
-  const handleAvailabilityChange = useCallback((
-    therapistName: string,
-    type: 'day' | 'wfh' | 'slot',
-    value: string,
-    isChecked: boolean
-  ) => {
-    setTherapistRules(prevRules => {
-      const newRules = { ...prevRules };
-      // Create a deep copy of the specific therapist's rules to ensure immutability
-      const currentTherapistRules = { ...newRules[therapistName] };
+  const handleAvailabilityChange = useCallback(
+    (therapistName: string, type: "day" | "wfh" | "slot", value: string, isChecked: boolean) => {
+      setTherapistRules((prevRules) => {
+        const newRules = { ...prevRules };
+        // Create a deep copy of the specific therapist's rules to ensure immutability
+        const currentTherapistRules = { ...newRules[therapistName] };
 
-      if (type === 'day') {
-        if (isChecked) {
-          // Add day to availableDays, ensuring no duplicates and removing from WFH days
-          currentTherapistRules.availableDays = Array.from(new Set([...currentTherapistRules.availableDays, value]));
-          currentTherapistRules.wfhDays = currentTherapistRules.wfhDays.filter(d => d !== value);
-        } else {
-          // Remove day from availableDays
-          currentTherapistRules.availableDays = currentTherapistRules.availableDays.filter(d => d !== value);
+        if (type === "day") {
+          if (isChecked) {
+            // Add day to availableDays, ensuring no duplicates and removing from WFH days
+            currentTherapistRules.availableDays = Array.from(new Set([...currentTherapistRules.availableDays, value]));
+            currentTherapistRules.wfhDays = currentTherapistRules.wfhDays.filter((d) => d !== value);
+          } else {
+            // Remove day from availableDays
+            currentTherapistRules.availableDays = currentTherapistRules.availableDays.filter((d) => d !== value);
+          }
+        } else if (type === "wfh") {
+          if (isChecked) {
+            // Add day to wfhDays, ensuring no duplicates and removing from availableDays
+            currentTherapistRules.wfhDays = Array.from(new Set([...currentTherapistRules.wfhDays, value]));
+            currentTherapistRules.availableDays = currentTherapistRules.availableDays.filter((d) => d !== value);
+          } else {
+            // Remove day from wfhDays
+            currentTherapistRules.wfhDays = currentTherapistRules.wfhDays.filter((d) => d !== value);
+          }
+        } else if (type === "slot") {
+          if (isChecked) {
+            // Add slot to availableSlots, ensuring no duplicates
+            currentTherapistRules.availableSlots = Array.from(
+              new Set([...currentTherapistRules.availableSlots, value as SlotType])
+            );
+          } else {
+            // Remove slot from availableSlots
+            currentTherapistRules.availableSlots = currentTherapistRules.availableSlots.filter((s) => s !== value);
+          }
         }
-      } else if (type === 'wfh') {
-        if (isChecked) {
-          // Add day to wfhDays, ensuring no duplicates and removing from availableDays
-          currentTherapistRules.wfhDays = Array.from(new Set([...currentTherapistRules.wfhDays, value]));
-          currentTherapistRules.availableDays = currentTherapistRules.availableDays.filter(d => d !== value);
-        } else {
-          // Remove day from wfhDays
-          currentTherapistRules.wfhDays = currentTherapistRules.wfhDays.filter(d => d !== value);
-        }
-      } else if (type === 'slot') {
-        if (isChecked) {
-          // Add slot to availableSlots, ensuring no duplicates
-          currentTherapistRules.availableSlots = Array.from(new Set([...currentTherapistRules.availableSlots, value as SlotType]));
-        } else {
-          // Remove slot from availableSlots
-          currentTherapistRules.availableSlots = currentTherapistRules.availableSlots.filter(s => s !== value);
-        }
-      }
-      newRules[therapistName] = currentTherapistRules; // Assign back the modified copy
-      return newRules;
-    });
-  }, []); // No dependencies, as it operates on prevRules
+        newRules[therapistName] = currentTherapistRules; // Assign back the modified copy
+        return newRules;
+      });
+    },
+    []
+  ); // No dependencies, as it operates on prevRules
 
   /**
    * Handles changes to the maximum consecutive slots rule for a therapist.
@@ -455,7 +508,7 @@ export default function App() {
    * @param value - The selected value (1 or 2).
    */
   const handleMaxConsecutiveChange = useCallback((therapistName: string, value: string) => {
-    setTherapistRules(prevRules => ({
+    setTherapistRules((prevRules) => ({
       ...prevRules,
       [therapistName]: {
         ...prevRules[therapistName],
@@ -478,13 +531,13 @@ export default function App() {
 
     // Track total assignments for each therapist for overall workload balance
     const therapistTotalAssignments: { [key: string]: number } = {};
-    therapists.forEach(t => therapistTotalAssignments[t] = 0);
+    therapists.forEach((t) => (therapistTotalAssignments[t] = 0));
 
     // Track room assignments per therapist for room distribution fairness
     const therapistRoomUsage: { [therapist: string]: { [room: string]: number } } = {};
-    therapists.forEach(t => {
+    therapists.forEach((t) => {
       therapistRoomUsage[t] = {};
-      rooms.forEach(r => therapistRoomUsage[t][r] = 0);
+      rooms.forEach((r) => (therapistRoomUsage[t][r] = 0));
     });
 
     /**
@@ -502,9 +555,19 @@ export default function App() {
       day: string,
       slot: SlotType,
       room: string,
-      currentDayAssignments: { [therapistName: string]: { AM: boolean, PM: boolean } }
+      currentDayAssignments: { [therapistName: string]: { AM: boolean; PM: boolean } }
     ): boolean => {
       const rules = therapistRules[therapist];
+
+      // RULE: UHC room specific blocking
+      // If the room is UHC, it's only allowed on Wed AM and Thu PM.
+      if (room === "UHC") {
+        const allowedWedAM = day === "Wed" && slot === "AM";
+        const allowedThuPM = day === "Thu" && slot === "PM";
+        if (!(allowedWedAM || allowedThuPM)) {
+          return false; // Block UHC for other times
+        }
+      }
 
       // Rule 1: WFH Day Exclusion (Hard Constraint)
       // If the therapist is marked as WFH for this day, they cannot be assigned to a physical room.
@@ -522,7 +585,7 @@ export default function App() {
       // If the therapist is limited to 1 slot per day, and they are already assigned to the other slot
       // on this day, they cannot take this current slot.
       if (rules.maxConsecutiveSlotsPerDay === 1) {
-        const otherSlot = slot === 'AM' ? 'PM' : 'AM';
+        const otherSlot = slot === "AM" ? "PM" : "AM";
         if (currentDayAssignments[therapist][otherSlot]) {
           return false;
         }
@@ -532,7 +595,7 @@ export default function App() {
       // This is crucial to ensure a therapist isn't scheduled for e.g., Room A and Room B
       // simultaneously during the AM slot on the same Monday.
       if (currentDayAssignments[therapist][slot]) {
-          return false;
+        return false;
       }
 
       return true; // If all checks pass, the therapist can be assigned
@@ -542,8 +605,8 @@ export default function App() {
     for (const day of days) {
       // Initialize day-specific assignment tracking for consecutive slot rule.
       // This is reset for each new day.
-      const dayAssignments: { [therapistName: string]: { AM: boolean, PM: boolean } } = {};
-      therapists.forEach(t => dayAssignments[t] = { AM: false, PM: false });
+      const dayAssignments: { [therapistName: string]: { AM: boolean; PM: boolean } } = {};
+      therapists.forEach((t) => (dayAssignments[t] = { AM: false, PM: false }));
 
       for (const slot of slots) {
         for (const room of rooms) {
@@ -584,7 +647,6 @@ export default function App() {
             // Update the global 'lastAssignedIndex' to continue the round-robin fairness
             // from this therapist for the next assignment attempt.
             lastAssignedIndex.current = therapists.indexOf(assignedTherapist);
-
           } else {
             // If no suitable therapist can be assigned based on the rules, leave the slot empty.
             newSchedule[day][slot][room] = "";
@@ -612,7 +674,7 @@ export default function App() {
           scale: 2, // Capture at 2x resolution for better clarity
           useCORS: true, // Set to true if you load images from external domains
           logging: false, // Set to true for debugging html2canvas issues
-          backgroundColor: '#FFFFFF', // Ensure background is white if transparent issues occur
+          backgroundColor: "#FFFFFF", // Ensure background is white if transparent issues occur
         });
 
         // Create an image URL from the canvas
@@ -623,7 +685,7 @@ export default function App() {
         link.href = image;
         // Dynamically name the file with current date and time
         const now = new Date();
-        const fileName = `Therapist_Roster_${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}.png`;
+        const fileName = `Therapist_Roster_${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")}_${now.getHours().toString().padStart(2, "0")}${now.getMinutes().toString().padStart(2, "0")}.png`;
         link.download = fileName;
 
         // Append to body, click, and remove
@@ -643,7 +705,6 @@ export default function App() {
     }
   };
 
-
   /**
    * Helper function to get an abbreviated room name (e.g., "Counselling Room A" -> "Rm A").
    * @param fullRoomName - The full name of the room.
@@ -654,9 +715,9 @@ export default function App() {
   };
 
   return (
-    <div className={`container ${showRulesPanel ? 'rules-panel-open' : ''}`}>
-        {/* Overlay for when the rules panel is open, to dim background and allow closing on click */}
-        {showRulesPanel && <div className="rules-overlay" onClick={() => setShowRulesPanel(false)}></div>}
+    <div className={`container ${showRulesPanel ? "rules-panel-open" : ""}`}>
+      {/* Overlay for when the rules panel is open, to dim background and allow closing on click */}
+      {showRulesPanel && <div className="rules-overlay" onClick={() => setShowRulesPanel(false)}></div>}
 
       <div className="header-content">
         <h1>HWB SWEE Room Allocation</h1>
@@ -676,7 +737,7 @@ export default function App() {
           onClick={() => {
             setViewType("daily");
             // Ensure selectedDay is valid if it changes (e.g., if a day was removed)
-            setSelectedDay(prevDay => days.includes(prevDay) ? prevDay : days[0]);
+            setSelectedDay((prevDay) => (days.includes(prevDay) ? prevDay : days[0]));
           }}
         >
           Daily View
@@ -697,13 +758,15 @@ export default function App() {
         )}
         {/* Button to trigger auto-roster generation */}
         <button className="generate-roster-btn" onClick={generateAutoRoster}>
-            Auto-Generate Roster
+          Auto-Generate Roster
         </button>
         {/* Button to toggle the rules customization panel */}
         <button className="rules-toggle-btn" onClick={() => setShowRulesPanel(true)}>
-            Customise Rules
+          Customise Rules
         </button>
       </div>
+
+      {savedMsg && <div className="saved-msg">{savedMsg}</div>}
 
       {/* Main layout containing therapist list and schedule table */}
       <div className="layout">
@@ -725,23 +788,23 @@ export default function App() {
           {/* Therapist Slot Counts Panel */}
           <div className="therapist-counts-panel">
             <h3>Room Overview</h3>
-            {therapists.map(t => {
-                const currentTherapistCounts = therapistSlotCounts[t];
-                return (
-                    <div key={`count-${t}`} className="therapist-count-item">
-                        <div className="therapist-summary">
-                            <span className="therapist-name">{t}</span>
-                            <span className="total-slots">{currentTherapistCounts?.totalSlots || 0} slots</span>
-                        </div>
-                        <div className="room-breakdown">
-                            {rooms.map(room => (
-                                <span key={`count-${t}-${room}`} className="room-count">
-                                    {getAbbreviatedRoomName(room)}: {currentTherapistCounts?.roomDistribution[room] || 0}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-                );
+            {therapists.map((t) => {
+              const currentTherapistCounts = therapistSlotCounts[t];
+              return (
+                <div key={`count-${t}`} className="therapist-count-item">
+                  <div className="therapist-summary">
+                    <span className="therapist-name">{t}</span>
+                    <span className="total-slots">{currentTherapistCounts?.totalSlots || 0} slots</span>
+                  </div>
+                  <div className="room-breakdown">
+                    {rooms.map((room) => (
+                      <span key={`count-${t}-${room}`} className="room-count">
+                        {getAbbreviatedRoomName(room)}: {currentTherapistCounts?.roomDistribution[room] || 0}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              );
             })}
           </div>
         </div>
@@ -766,8 +829,10 @@ export default function App() {
                 // Daily View Header: Slot | Day (spanning rooms) | Room A | Room B | ...
                 <>
                   <tr>
-                    <th rowSpan={2} style={{ verticalAlign: 'middle' }}>Slot</th>
-                    <th key={selectedDay} colSpan={rooms.length} style={{ textAlign: 'center' }}>
+                    <th rowSpan={2} style={{ verticalAlign: "middle" }}>
+                      Slot
+                    </th>
+                    <th key={selectedDay} colSpan={rooms.length} style={{ textAlign: "center" }}>
                       {selectedDay}
                     </th>
                   </tr>
@@ -789,42 +854,40 @@ export default function App() {
                     <tr key={`${day}-${slot}`}>
                       {/* Day cell, spans two rows (AM/PM) */}
                       {slotIndex === 0 && (
-                        <td rowSpan={slots.length} className="sticky-col-day-cell">
+                        <th rowSpan={2} className="sticky-col-day">
                           {day}
-                        </td>
+                        </th>
                       )}
-                      {/* Slot cell (AM or PM) */}
-                      <td className="sticky-col-slot-cell">{slot}</td>
-                      {/* Room cells for the current day and slot */}
+                      <th className="sticky-col-slot">{slot}</th>
                       {rooms.map((room) => {
-                        const currentTherapist = schedule[day]?.[slot]?.[room];
+                        const assignedTherapist = schedule[day][slot][room];
+                        const isBlocked = isUHCBlocked(day, slot as SlotType, room);
+
                         return (
                           <td
                             key={`${day}-${slot}-${room}`}
-                            onDrop={(e) => onDropCell(e, day, slot, room)}
+                            // Add data attributes for use in onDragOverCell
+                            data-day={day}
+                            data-slot={slot}
+                            data-room={room}
                             onDragOver={onDragOverCell}
+                            onDrop={(e) => onDropCell(e, day, slot as SlotType, room)} // Cast slot to SlotType
                             onDragEnter={onDragEnterCell}
                             onDragLeave={onDragLeaveCell}
-                            className="drop-cell"
+                            className={`
+                              ${assignedTherapist ? "assigned" : "empty"}
+                              ${isBlocked ? "blocked-uhc" : ""}
+                            `}
                           >
-                            {currentTherapist ? (
+                            {assignedTherapist && (
                               <div
-                                className="assigned-therapist"
                                 draggable
-                                onDragStart={(e) => onDragStartCell(e, currentTherapist, day, slot, room)}
-                                title={`Drag to move ${currentTherapist}. Click X to clear.`}
+                                onDragStart={(e) => onDragStartCell(e, assignedTherapist, day, slot, room)}
+                                onDoubleClick={() => clearSlot(day, slot, room)}
+                                className="assigned-therapist"
                               >
-                                {currentTherapist}
-                                <button
-                                  className="clear-slot-btn"
-                                  onClick={() => clearSlot(day, slot, room)}
-                                  title="Clear slot"
-                                >
-                                  &times;
-                                </button>
+                                {assignedTherapist}
                               </div>
-                            ) : (
-                              <span className="placeholder"></span> // Empty placeholder for empty cells
                             )}
                           </td>
                         );
@@ -833,39 +896,39 @@ export default function App() {
                   ))
                 )
               ) : (
-                // Daily View Body: Each row is a slot for the selected day
+                // Daily View Body: Each row is a Slot for the selected day
                 slots.map((slot) => (
-                  <tr key={slot}>
-                    <td>{slot}</td>
+                  <tr key={`${selectedDay}-${slot}`}>
+                    <th className="sticky-col-slot">{slot}</th>
                     {rooms.map((room) => {
-                      const currentTherapist = schedule[selectedDay]?.[slot]?.[room];
+                      const assignedTherapist = schedule[selectedDay]?.[slot]?.[room] || "";
+                      const isBlocked = isUHCBlocked(selectedDay, slot as SlotType, room);
+
                       return (
                         <td
                           key={`${selectedDay}-${slot}-${room}`}
-                          onDrop={(e) => onDropCell(e, selectedDay, slot, room)}
+                          // Add data attributes for use in onDragOverCell
+                          data-day={selectedDay}
+                          data-slot={slot}
+                          data-room={room}
                           onDragOver={onDragOverCell}
+                          onDrop={(e) => onDropCell(e, selectedDay, slot as SlotType, room)} // Cast slot to SlotType
                           onDragEnter={onDragEnterCell}
                           onDragLeave={onDragLeaveCell}
-                          className="drop-cell"
+                          className={`
+                            ${assignedTherapist ? "assigned" : "empty"}
+                            ${isBlocked ? "blocked-uhc" : ""}
+                          `}
                         >
-                          {currentTherapist ? (
+                          {assignedTherapist && (
                             <div
-                              className="assigned-therapist"
                               draggable
-                              onDragStart={(e) => onDragStartCell(e, currentTherapist, selectedDay, slot, room)}
-                              title={`Drag to move ${currentTherapist}. Click X to clear.`}
+                              onDragStart={(e) => onDragStartCell(e, assignedTherapist, selectedDay, slot, room)}
+                              onDoubleClick={() => clearSlot(selectedDay, slot, room)}
+                              className="assigned-therapist"
                             >
-                              {currentTherapist}
-                              <button
-                                className="clear-slot-btn"
-                                onClick={() => clearSlot(selectedDay, slot, room)}
-                                title="Clear slot"
-                              >
-                                &times;
-                              </button>
+                              {assignedTherapist}
                             </div>
-                          ) : (
-                            <span className="placeholder"></span>
                           )}
                         </td>
                       );
@@ -875,112 +938,95 @@ export default function App() {
               )}
             </tbody>
           </table>
-          {/* Action buttons for schedule management */}
-          <div className="button-group">
-            <button className="reset-btn" onClick={resetSchedule}>
-              Reset Schedule
-            </button>
-            <button className="copy-btn" onClick={saveSchedule}>
-              Save & Copy Sharable Link
-            </button>
-            {/* New button for saving as PNG */}
-            <button className="copy-btn save-png-btn" onClick={saveScheduleAsPNG}>
-                Save as PNG
-            </button>
-          </div>
-          {/* Message display for save/error feedback */}
-          {savedMsg && <p className={`saved-msg ${savedMsg.startsWith("Error") ? 'error' : ''}`}>{savedMsg}</p>}
         </div>
       </div>
 
-      {/* Rules Panel - positioned fixed to slide in from the right */}
-      <div className={`rules-panel ${showRulesPanel ? 'rules-panel-open' : ''}`}>
-        <div className="rules-panel-header">
-            <h2>Therapist Roster Rules</h2>
-            <button className="close-panel-btn" onClick={() => setShowRulesPanel(false)}>&times;</button>
-        </div>
-        <p className="rules-hint">
-            Define rules for each therapist. The auto-roster will attempt to fill the schedule based on these constraints, prioritizing an equal distribution of assignments and rooms.
-        </p>
-        <div className="rules-scroll-area">
-          {therapists.map(therapist => (
-            <div key={therapist} className="therapist-rules-card">
-              <h3>{therapist}</h3>
-              <div className="rule-section">
-                <h4>General Availability:</h4>
-                <p className="rule-sub-hint">Days and slots they are available for any office work.</p>
-                <div className="checkbox-group">
-                  {days.map(day => (
-                    <label key={`avail-${therapist}-${day}`}>
-                      <input
-                        type="checkbox"
-                        checked={therapistRules[therapist]?.availableDays.includes(day)}
-                        onChange={(e) => handleAvailabilityChange(therapist, 'day', day, e.target.checked)}
-                      />
-                      {day}
-                    </label>
-                  ))}
-                </div>
-                <div className="checkbox-group">
-                  {slots.map(slot => (
-                    <label key={`avail-${therapist}-${slot}`}>
-                      <input
-                        type="checkbox"
-                        checked={therapistRules[therapist]?.availableSlots.includes(slot)}
-                        onChange={(e) => handleAvailabilityChange(therapist, 'slot', slot, e.target.checked)}
-                      />
-                      {slot}
-                    </label>
-                  ))}
-                </div>
-              </div>
+      <div className="action-buttons">
+        <button className="save-btn" onClick={saveSchedule}>
+          Save Schedule
+        </button>
+        <button className="reset-btn" onClick={resetSchedule}>
+          Reset Schedule
+        </button>
+        <button className="save-png-btn" onClick={saveScheduleAsPNG}>
+          Save as PNG
+        </button>
+      </div>
 
-              <div className="rule-section">
-                <h4>Work From Home (WFH) Days:</h4>
-                <p className="rule-sub-hint">Therapists cannot be assigned to rooms on these days.</p>
-                <div className="checkbox-group">
-                  {days.map(day => (
-                    <label key={`wfh-${therapist}-${day}`}>
-                      <input
-                        type="checkbox"
-                        checked={therapistRules[therapist]?.wfhDays.includes(day)}
-                        onChange={(e) => handleAvailabilityChange(therapist, 'wfh', day, e.target.checked)}
-                      />
-                      {day}
-                    </label>
-                  ))}
-                </div>
-              </div>
+      {/* Rules Customization Panel */}
+      <div className={`rules-panel ${showRulesPanel ? "open" : ""}`}>
+        <h2>Customise Therapist Rules</h2>
+        <button className="close-rules-btn" onClick={() => setShowRulesPanel(false)}>
+          &times;
+        </button>
 
-              <div className="rule-section">
-                <h4>Max Consecutive Slots (Per Day):</h4>
-                <p className="rule-sub-hint">Set to 1 if they can only do AM *or* PM. Set to 2 if they can do both AM & PM.</p>
-                <div className="radio-group">
-                  <label>
-                    <input
-                      type="radio"
-                      name={`consecutive-${therapist}`}
-                      value="1"
-                      checked={therapistRules[therapist]?.maxConsecutiveSlotsPerDay === 1}
-                      onChange={(e) => handleMaxConsecutiveChange(therapist, e.target.value)}
-                    />
-                    1 slot (AM or PM)
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name={`consecutive-${therapist}`}
-                      value="2"
-                      checked={therapistRules[therapist]?.maxConsecutiveSlotsPerDay === 2}
-                      onChange={(e) => handleMaxConsecutiveChange(therapist, e.target.value)}
-                    />
-                    2 slots (AM & PM)
-                  </label>
-                </div>
-              </div>
+        {therapists.map((therapist) => (
+          <div key={`rules-${therapist}`} className="therapist-rules-section">
+            <h3>{therapist}</h3>
+            <div className="rule-group">
+              <h4>Available Days:</h4>
+              {days.map((day) => (
+                <label key={`${therapist}-${day}-available`}>
+                  <input
+                    type="checkbox"
+                    checked={therapistRules[therapist]?.availableDays.includes(day)}
+                    onChange={(e) => handleAvailabilityChange(therapist, "day", day, e.target.checked)}
+                  />
+                  {day}
+                </label>
+              ))}
             </div>
-          ))}
-        </div>
+            <div className="rule-group">
+              <h4>Work From Home (WFH) Days:</h4>
+              {days.map((day) => (
+                <label key={`${therapist}-${day}-wfh`}>
+                  <input
+                    type="checkbox"
+                    checked={therapistRules[therapist]?.wfhDays.includes(day)}
+                    onChange={(e) => handleAvailabilityChange(therapist, "wfh", day, e.target.checked)}
+                  />
+                  {day}
+                </label>
+              ))}
+            </div>
+            <div className="rule-group">
+              <h4>Available Slots:</h4>
+              {slots.map((slot) => (
+                <label key={`${therapist}-${slot}-slot`}>
+                  <input
+                    type="checkbox"
+                    checked={therapistRules[therapist]?.availableSlots.includes(slot)}
+                    onChange={(e) => handleAvailabilityChange(therapist, "slot", slot, e.target.checked)}
+                  />
+                  {slot}
+                </label>
+              ))}
+            </div>
+            <div className="rule-group">
+              <h4>Max Consecutive Slots Per Day:</h4>
+              <label>
+                <input
+                  type="radio"
+                  name={`maxSlots-${therapist}`}
+                  value="1"
+                  checked={therapistRules[therapist]?.maxConsecutiveSlotsPerDay === 1}
+                  onChange={(e) => handleMaxConsecutiveChange(therapist, e.target.value)}
+                />
+                1 Slot (AM or PM)
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name={`maxSlots-${therapist}`}
+                  value="2"
+                  checked={therapistRules[therapist]?.maxConsecutiveSlotsPerDay === 2}
+                  onChange={(e) => handleMaxConsecutiveChange(therapist, e.target.value)}
+                />
+                2 Slots (AM & PM)
+              </label>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
