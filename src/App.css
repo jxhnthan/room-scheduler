@@ -33,7 +33,7 @@
   --color-background-drop-cell: #f9faff; /* Drop cell background */
 
   --color-border-light: #e0e0e0;
-  --color-border-medium: #d8dde4;
+  --color-border-medium: #d8dde4; /* Using this for standard table borders */
 
   --color-success-bg: #dcfce7;
   --color-success-border: #bbf7d0;
@@ -383,13 +383,18 @@ h1 {
 
 table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: collapse; /* Keep border-collapse: collapse */
   text-align: center;
   min-width: fit-content;
 }
 
 th,
 td {
+  /* Define borders for all cells.
+     The 'border-collapse' property on the table will merge these,
+     but defining them explicitly helps prevent weird rendering issues.
+     We might need to adjust the specific sticky column borders later.
+  */
   border: 1px solid var(--color-border-medium);
   padding: 0.5rem;
   min-width: 90px; /* Base min-width for cells */
@@ -408,10 +413,11 @@ th {
   position: sticky;
   top: 0;
   z-index: 10;
+  /* Add box-shadow to the bottom of sticky headers to ensure a crisp line */
+  box-shadow: 0 1px 0 0 var(--color-border-medium);
 }
 
 /* Base sticky behavior for the first column (e.g., Daily View's Slot) */
-/* This will apply unless overridden by more specific classes like .weekly-view-active */
 .schedule-table-wrapper th:first-child,
 .schedule-table-wrapper td:first-child {
   position: sticky;
@@ -420,24 +426,22 @@ th {
   background-color: var(--color-background-table-header); /* for header */
   width: 90px; /* Explicit width for predictable sticky behavior */
   min-width: 90px;
-  /* border-right: 1px solid var(--color-border-medium); <-- REMOVED */
-  box-shadow: 1px 0 0 0 var(--color-border-medium); /* ADDED: Simulate right border */
+  /* Use box-shadow to ensure the right border is always visible on sticky elements */
+  box-shadow: 1px 0 0 0 var(--color-border-medium), /* Right border */
+              -1px 0 0 0 var(--color-border-medium); /* Left border, for the very first column */
 }
 .schedule-table-wrapper td:first-child {
   background-color: var(--color-background-white); /* for data cells */
 }
 
 /* New sticky columns for Weekly View - Applied when .weekly-view-active is present */
-/* Ensure these values match min-width/width of adjacent sticky columns */
 .weekly-view-active .sticky-col-day {
   position: sticky;
   left: 0;
   z-index: 12; /* Highest z-index for the outermost sticky column */
-  background-color: var(
-    --color-background-table-header
-  ); /* Ensure solid background */
-  /* border-right: 1px solid var(--color-border-medium); <-- REMOVED */
-  box-shadow: 1px 0 0 0 var(--color-border-medium); /* ADDED: Simulate right border */
+  background-color: var(--color-background-table-header);
+  box-shadow: 1px 0 0 0 var(--color-border-medium), /* Right border */
+              -1px 0 0 0 var(--color-border-medium); /* Left border */
   width: 90px; /* Explicit width */
   min-width: 90px;
 }
@@ -445,11 +449,11 @@ th {
 .weekly-view-active .sticky-col-day-cell {
   position: sticky;
   left: 0;
-  z-index: 12; /* Highest z-index for the outermost sticky column */
-  background-color: var(--color-background-white); /* Ensure solid background */
-  /* border-right: 1px solid var(--color-border-medium); <-- REMOVED */
-  box-shadow: 1px 0 0 0 var(--color-border-medium); /* ADDED: Simulate right border */
-  width: 90px; /* Explicit width */
+  z-index: 12;
+  background-color: var(--color-background-white);
+  box-shadow: 1px 0 0 0 var(--color-border-medium), /* Right border */
+              -1px 0 0 0 var(--color-border-medium); /* Left border */
+  width: 90px;
   min-width: 90px;
 }
 
@@ -457,12 +461,10 @@ th {
   position: sticky;
   left: 90px; /* This must be the exact width of .sticky-col-day */
   z-index: 11; /* Lower than day column, higher than normal cells */
-  background-color: var(
-    --color-background-table-header
-  ); /* Ensure solid background */
-  /* border-right: 1px solid var(--color-border-medium); <-- REMOVED */
-  box-shadow: 1px 0 0 0 var(--color-border-medium); /* ADDED: Simulate right border */
-  width: 90px; /* Explicit width */
+  background-color: var(--color-background-table-header);
+  box-shadow: 1px 0 0 0 var(--color-border-medium), /* Right border */
+              -1px 0 0 0 var(--color-border-medium); /* Left border */
+  width: 90px;
   min-width: 90px;
 }
 
@@ -470,10 +472,10 @@ th {
   position: sticky;
   left: 90px; /* This must be the exact width of .sticky-col-day-cell */
   z-index: 11;
-  background-color: var(--color-background-white); /* Ensure solid background */
-  /* border-right: 1px solid var(--color-border-medium); <-- REMOVED */
-  box-shadow: 1px 0 0 0 var(--color-border-medium); /* ADDED: Simulate right border */
-  width: 90px; /* Explicit width */
+  background-color: var(--color-background-white);
+  box-shadow: 1px 0 0 0 var(--color-border-medium), /* Right border */
+              -1px 0 0 0 var(--color-border-medium); /* Left border */
+  width: 90px;
   min-width: 90px;
 }
 
@@ -761,12 +763,17 @@ small {
 
   /* Adjust sticky column widths and left offsets for smaller screens */
   .schedule-table-wrapper th:first-child,
-  .schedule-table-wrapper td:first-child,
+  .schedule-table-wrapper td:first-child {
+    width: 80px;
+    min-width: 80px;
+    box-shadow: 1px 0 0 0 var(--color-border-medium), -1px 0 0 0 var(--color-border-medium);
+  }
+
   .weekly-view-active .sticky-col-day,
   .weekly-view-active .sticky-col-day-cell {
     width: 80px;
     min-width: 80px;
-    box-shadow: 1px 0 0 0 var(--color-border-medium); /* Adjusted box-shadow for responsive */
+    box-shadow: 1px 0 0 0 var(--color-border-medium), -1px 0 0 0 var(--color-border-medium);
   }
 
   .weekly-view-active .sticky-col-slot,
@@ -774,7 +781,7 @@ small {
     left: 80px; /* Update left based on new day column width */
     width: 80px;
     min-width: 80px;
-    box-shadow: 1px 0 0 0 var(--color-border-medium); /* Adjusted box-shadow for responsive */
+    box-shadow: 1px 0 0 0 var(--color-border-medium), -1px 0 0 0 var(--color-border-medium);
   }
 
   .rules-panel {
@@ -827,12 +834,17 @@ small {
 
   /* Adjust sticky column widths and left offsets for smaller screens */
   .schedule-table-wrapper th:first-child,
-  .schedule-table-wrapper td:first-child,
+  .schedule-table-wrapper td:first-child {
+    width: 70px;
+    min-width: 70px;
+    box-shadow: 1px 0 0 0 var(--color-border-medium), -1px 0 0 0 var(--color-border-medium);
+  }
+
   .weekly-view-active .sticky-col-day,
   .weekly-view-active .sticky-col-day-cell {
     width: 70px;
     min-width: 70px;
-    box-shadow: 1px 0 0 0 var(--color-border-medium); /* Adjusted box-shadow for responsive */
+    box-shadow: 1px 0 0 0 var(--color-border-medium), -1px 0 0 0 var(--color-border-medium);
   }
 
   .weekly-view-active .sticky-col-slot,
@@ -840,7 +852,7 @@ small {
     left: 70px; /* Update left based on new day column width */
     width: 70px;
     min-width: 70px;
-    box-shadow: 1px 0 0 0 var(--color-border-medium); /* Adjusted box-shadow for responsive */
+    box-shadow: 1px 0 0 0 var(--color-border-medium), -1px 0 0 0 var(--color-border-medium);
   }
 }
 
@@ -863,12 +875,17 @@ small {
 
   /* Adjust sticky column widths and left offsets for smallest screens */
   .schedule-table-wrapper th:first-child,
-  .schedule-table-wrapper td:first-child,
+  .schedule-table-wrapper td:first-child {
+    width: 60px;
+    min-width: 60px;
+    box-shadow: 1px 0 0 0 var(--color-border-medium), -1px 0 0 0 var(--color-border-medium);
+  }
+
   .weekly-view-active .sticky-col-day,
   .weekly-view-active .sticky-col-day-cell {
     width: 60px;
     min-width: 60px;
-    box-shadow: 1px 0 0 0 var(--color-border-medium); /* Adjusted box-shadow for responsive */
+    box-shadow: 1px 0 0 0 var(--color-border-medium), -1px 0 0 0 var(--color-border-medium);
   }
 
   .weekly-view-active .sticky-col-slot,
@@ -876,7 +893,7 @@ small {
     left: 60px; /* Update left based on new day column width */
     width: 60px;
     min-width: 60px;
-    box-shadow: 1px 0 0 0 var(--color-border-medium); /* Adjusted box-shadow for responsive */
+    box-shadow: 1px 0 0 0 var(--color-border-medium), -1px 0 0 0 var(--color-border-medium);
   }
 }
 
