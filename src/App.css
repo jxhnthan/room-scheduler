@@ -9,9 +9,9 @@
 
 :root {
   /* NUS Brand Colors */
-  --nus-blue: #003D7C;
-  --nus-orange: #EF7C00;
-  --nus-white: #FFFFFF;
+  --nus-blue: #003d7c;
+  --nus-orange: #ef7c00;
+  --nus-white: #ffffff;
 
   /* Re-mapping to semantic names for application */
   --color-primary: var(--nus-blue);
@@ -47,8 +47,8 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   line-height: 1.6;
   background-color: var(--color-background-light);
   color: var(--color-text-dark);
@@ -69,32 +69,33 @@ body {
 
 /* When rules panel is open, shift the main container */
 .container.rules-panel-open {
-    margin-right: calc(2rem + var(--rules-panel-width)); /* Original margin + panel width */
+  margin-right: calc(
+    2rem + var(--rules-panel-width)
+  ); /* Original margin + panel width */
 }
 
 .header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 2rem;
-    flex-wrap: wrap;
-    gap: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 h1 {
-    font-size: 2rem;
-    color: var(--color-primary);
-    margin: 0;
+  font-size: 2rem;
+  color: var(--color-primary);
+  margin: 0;
 }
 
 .current-time {
-    font-size: 1.1rem;
-    font-weight: 500;
-    color: var(--color-text-mid);
-    text-align: right;
-    white-space: nowrap;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--color-text-mid);
+  text-align: right;
+  white-space: nowrap;
 }
-
 
 /* === View Controls === */
 .view-controls {
@@ -118,7 +119,8 @@ h1 {
   color: var(--color-primary);
   cursor: pointer;
   font-weight: 500;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    color 0.2s ease;
   font-size: 0.9rem;
   white-space: nowrap;
 }
@@ -146,161 +148,161 @@ h1 {
 
 /* Specific styles for new buttons */
 .generate-roster-btn {
-    background-color: var(--color-secondary);
-    color: var(--nus-white);
-    border-color: var(--color-secondary);
-    margin-left: auto; /* Push to the right if space allows */
+  background-color: var(--color-secondary);
+  color: var(--nus-white);
+  border-color: var(--color-secondary);
+  margin-left: auto; /* Push to the right if space allows */
 }
 .generate-roster-btn:hover {
-    background-color: var(--color-secondary-dark);
-    border-color: var(--color-secondary-dark);
+  background-color: var(--color-secondary-dark);
+  border-color: var(--color-secondary-dark);
 }
 
 .rules-toggle-btn {
-    border-color: var(--color-text-mid);
-    color: var(--color-text-mid);
+  border-color: var(--color-text-mid);
+  color: var(--color-text-mid);
 }
 .rules-toggle-btn:hover {
-    background-color: #f0f4f8;
+  background-color: #f0f4f8;
 }
-
 
 /* === Rules Panel - Slide-out from right === */
 .rules-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
-    z-index: 100;
-    display: none; /* Hidden by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  display: none; /* Hidden by default */
 }
 
 .container.rules-panel-open .rules-overlay {
-    display: block; /* Show when panel is open */
+  display: block; /* Show when panel is open */
 }
 
 .rules-panel {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: var(--rules-panel-width);
-    max-width: 90vw; /* Prevent panel from being too wide on small screens */
-    height: 100%;
-    background-color: var(--color-background-list);
-    box-shadow: -4px 0 15px rgba(0, 0, 0, 0.15);
-    transform: translateX(100%); /* Start off-screen */
-    transition: transform 0.3s ease-out;
-    z-index: 101; /* Above overlay */
-    display: flex; /* For internal layout */
-    flex-direction: column;
-    padding: 1.5rem 1.2rem;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: var(--rules-panel-width);
+  max-width: 90vw; /* Prevent panel from being too wide on small screens */
+  height: 100%;
+  background-color: var(--color-background-list);
+  box-shadow: -4px 0 15px rgba(0, 0, 0, 0.15);
+  transform: translateX(100%); /* Start off-screen */
+  transition: transform 0.3s ease-out;
+  z-index: 101; /* Above overlay */
+  display: flex; /* For internal layout */
+  flex-direction: column;
+  padding: 1.5rem 1.2rem;
 }
 
 .rules-panel.rules-panel-open {
-    transform: translateX(0%); /* Slide in */
+  transform: translateX(0%); /* Slide in */
 }
 
 .rules-panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--color-border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 .rules-panel-header h2 {
-    color: var(--color-primary);
-    font-size: 1.6rem;
-    margin: 0;
+  color: var(--color-primary);
+  font-size: 1.6rem;
+  margin: 0;
 }
 
 .close-panel-btn {
-    background: none;
-    border: none;
-    font-size: 2.2rem;
-    color: var(--color-text-mid);
-    cursor: pointer;
-    line-height: 1;
-    padding: 0;
-    transition: color 0.2s ease;
+  background: none;
+  border: none;
+  font-size: 2.2rem;
+  color: var(--color-text-mid);
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  transition: color 0.2s ease;
 }
 
 .close-panel-btn:hover {
-    color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .rules-hint {
-    font-size: 0.9em;
-    color: var(--color-text-light);
-    margin-bottom: 1.5rem;
-    line-height: 1.4;
+  font-size: 0.9em;
+  color: var(--color-text-light);
+  margin-bottom: 1.5rem;
+  line-height: 1.4;
 }
 
 .rules-scroll-area {
-    flex-grow: 1; /* Allows content to scroll */
-    overflow-y: auto;
-    padding-right: 0.5rem; /* For scrollbar space */
+  flex-grow: 1; /* Allows content to scroll */
+  overflow-y: auto;
+  padding-right: 0.5rem; /* For scrollbar space */
 }
 
 .therapist-rules-card {
-    background-color: var(--nus-white);
-    border: 1px solid var(--color-border-light);
-    border-radius: 6px;
-    padding: 1rem 1.2rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  background-color: var(--nus-white);
+  border: 1px solid var(--color-border-light);
+  border-radius: 6px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
 }
 
 .therapist-rules-card h3 {
-    font-size: 1.15rem;
-    color: var(--color-text-dark);
-    margin-bottom: 1rem;
-    border-bottom: 1px dashed var(--color-border-light);
-    padding-bottom: 0.5rem;
+  font-size: 1.15rem;
+  color: var(--color-text-dark);
+  margin-bottom: 1rem;
+  border-bottom: 1px dashed var(--color-border-light);
+  padding-bottom: 0.5rem;
 }
 
 .rule-section {
-    margin-bottom: 1.2rem;
+  margin-bottom: 1.2rem;
 }
 
 .rule-section h4 {
-    font-size: 1rem;
-    color: var(--color-text-mid);
-    margin-bottom: 0.5rem;
+  font-size: 1rem;
+  color: var(--color-text-mid);
+  margin-bottom: 0.5rem;
 }
 
 .rule-sub-hint {
-    font-size: 0.85em;
-    color: var(--color-text-light);
-    margin-bottom: 0.8rem;
-    line-height: 1.3;
+  font-size: 0.85em;
+  color: var(--color-text-light);
+  margin-bottom: 0.8rem;
+  line-height: 1.3;
 }
 
-.checkbox-group, .radio-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.8rem 1.2rem; /* Row gap, column gap */
+.checkbox-group,
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem 1.2rem; /* Row gap, column gap */
 }
 
-.checkbox-group label, .radio-group label {
-    display: flex;
-    align-items: center;
-    gap: 0.4em;
-    font-size: 0.9em;
-    color: var(--color-text-dark);
-    cursor: pointer;
+.checkbox-group label,
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  font-size: 0.9em;
+  color: var(--color-text-dark);
+  cursor: pointer;
 }
 
-.checkbox-group input[type="checkbox"],
-.radio-group input[type="radio"] {
-    transform: scale(1.1);
-    cursor: pointer;
-    accent-color: var(--color-primary); /* Style checkbox/radio to brand color */
+.checkbox-group input[type='checkbox'],
+.radio-group input[type='radio'] {
+  transform: scale(1.1);
+  cursor: pointer;
+  accent-color: var(--color-primary); /* Style checkbox/radio to brand color */
 }
-
 
 /* === Layout === */
 .layout {
@@ -312,8 +314,10 @@ h1 {
 
 /* When rules panel is open, shift the main layout content */
 .layout.layout-shifted {
-    transform: translateX(calc(-1 * var(--rules-panel-width) / 2)); /* Half shift to centralize */
-    /* Adjust this value if you want the layout to truly shrink or just slide */
+  transform: translateX(
+    calc(-1 * var(--rules-panel-width) / 2)
+  ); /* Half shift to centralize */
+  /* Adjust this value if you want the layout to truly shrink or just slide */
 }
 
 .therapists-list {
@@ -341,9 +345,8 @@ h1 {
 
 /* Ensure therapist items take up available space for scrolling */
 .therapists-list > div:not(.therapist-counts-panel) {
-    flex-shrink: 0; /* Prevent individual therapist items from shrinking */
+  flex-shrink: 0; /* Prevent individual therapist items from shrinking */
 }
-
 
 .therapist {
   padding: 0.5rem 0.75rem;
@@ -355,7 +358,8 @@ h1 {
   user-select: none;
   font-weight: 500;
   color: var(--color-primary);
-  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.15s ease,
+    box-shadow 0.2s ease;
 }
 
 .therapist:hover {
@@ -388,10 +392,13 @@ th,
 td {
   border: 1px solid var(--color-border-medium);
   padding: 0.5rem;
-  min-width: 90px;
+  min-width: 90px; /* Base min-width for cells */
   max-width: 150px;
   vertical-align: middle;
   font-size: 0.9rem;
+  background-color: var(
+    --color-background-white
+  ); /* Ensure all cells have a solid background */
 }
 
 th {
@@ -403,52 +410,66 @@ th {
   z-index: 10;
 }
 
-/* Existing sticky behavior for first column (Daily View's Slot) */
-th:first-child,
-td:first-child {
-    position: sticky;
-    left: 0;
-    z-index: 11;
-    background-color: var(--color-background-table-header);
-    border-right: 1px solid var(--color-border-medium);
+/* Base sticky behavior for the first column (e.g., Daily View's Slot) */
+/* This will apply unless overridden by more specific classes like .weekly-view-active */
+.schedule-table-wrapper th:first-child,
+.schedule-table-wrapper td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 11; /* Higher than regular cells, lower than multiple sticky columns */
+  background-color: var(--color-background-table-header); /* for header */
+  width: 90px; /* Explicit width for predictable sticky behavior */
+  min-width: 90px;
+  border-right: 1px solid var(--color-border-medium);
 }
-td:first-child {
-    background-color: var(--color-background-white);
-}
-
-/* New sticky columns for Weekly View */
-.sticky-col-day {
-    position: sticky;
-    left: 0;
-    z-index: 12; /* Higher z-index to be on top of slot column */
-    background-color: var(--color-background-table-header); /* Match header bg */
-    border-right: 1px solid var(--color-border-medium);
+.schedule-table-wrapper td:first-child {
+  background-color: var(--color-background-white); /* for data cells */
 }
 
-.sticky-col-day-cell {
-    position: sticky;
-    left: 0;
-    z-index: 12;
-    background-color: var(--color-background-white); /* Match row bg */
-    border-right: 1px solid var(--color-border-medium);
-    font-weight: 500;
+/* New sticky columns for Weekly View - Applied when .weekly-view-active is present */
+/* Ensure these values match min-width/width of adjacent sticky columns */
+.weekly-view-active .sticky-col-day {
+  position: sticky;
+  left: 0;
+  z-index: 12; /* Highest z-index for the outermost sticky column */
+  background-color: var(
+    --color-background-table-header
+  ); /* Ensure solid background */
+  border-right: 1px solid var(--color-border-medium);
+  width: 90px; /* Explicit width */
+  min-width: 90px;
 }
 
-.sticky-col-slot {
-    position: sticky;
-    left: 90px; /* Adjust this value based on .sticky-col-day's min-width */
-    z-index: 11; /* Lower than day column, higher than normal cells */
-    background-color: var(--color-background-table-header); /* Match header bg */
-    border-right: 1px solid var(--color-border-medium);
+.weekly-view-active .sticky-col-day-cell {
+  position: sticky;
+  left: 0;
+  z-index: 12; /* Highest z-index for the outermost sticky column */
+  background-color: var(--color-background-white); /* Ensure solid background */
+  border-right: 1px solid var(--color-border-medium);
+  width: 90px; /* Explicit width */
+  min-width: 90px;
 }
 
-.sticky-col-slot-cell {
-    position: sticky;
-    left: 90px; /* Adjust this value based on .sticky-col-day-cell's width */
-    z-index: 11;
-    background-color: var(--color-background-white); /* Match row bg */
-    border-right: 1px solid var(--color-border-medium);
-    font-weight: 500;
+.weekly-view-active .sticky-col-slot {
+  position: sticky;
+  left: 90px; /* This must be the exact width of .sticky-col-day */
+  z-index: 11; /* Lower than day column, higher than normal cells */
+  background-color: var(
+    --color-background-table-header
+  ); /* Ensure solid background */
+  border-right: 1px solid var(--color-border-medium);
+  width: 90px; /* Explicit width */
+  min-width: 90px;
+}
+
+.weekly-view-active .sticky-col-slot-cell {
+  position: sticky;
+  left: 90px; /* This must be the exact width of .sticky-col-day-cell */
+  z-index: 11;
+  background-color: var(--color-background-white); /* Ensure solid background */
+  border-right: 1px solid var(--color-border-medium);
+  width: 90px; /* Explicit width */
+  min-width: 90px;
 }
 
 small {
@@ -512,14 +533,13 @@ small {
   color: #ef4444;
 }
 
-
 /* === Buttons & Messages === */
 .button-group {
-    margin-top: 1.25rem;
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    justify-content: flex-end;
+  margin-top: 1.25rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .copy-btn,
@@ -566,22 +586,22 @@ small {
   background: var(--color-secondary-dark);
 }
 
-.save-png-btn { /* New style for the PNG save button */
-  background: #4CAF50; /* Green */
+.save-png-btn {
+  /* New style for the PNG save button */
+  background: #4caf50; /* Green */
 }
 
 .save-png-btn:hover {
-  background: #388E3C; /* Darker green */
+  background: #388e3c; /* Darker green */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .save-png-btn:focus,
 .save-png-btn:focus-visible {
-  outline: 3px solid #A5D6A7; /* Lighter green outline */
+  outline: 3px solid #a5d6a7; /* Lighter green outline */
   outline-offset: 2px;
-  background: #388E3C;
+  background: #388e3c;
 }
-
 
 .saved-msg {
   margin-top: 1rem;
@@ -613,7 +633,9 @@ small {
 .therapist-counts-panel {
   margin-top: 20px;
   padding: 15px;
-  background-color: var(--color-background-list); /* Use the list background color */
+  background-color: var(
+    --color-background-list
+  ); /* Use the list background color */
   border: 1px solid var(--color-border-light);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -637,10 +659,12 @@ small {
   margin-bottom: 15px; /* More space between therapists */
   padding-bottom: 10px;
   border-bottom: 1px dashed #eee;
-  background-color: var(--color-background-white); /* Slightly different background for each item */
+  background-color: var(
+    --color-background-white
+  ); /* Slightly different background for each item */
   padding: 10px;
   border-radius: 5px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
 }
 
 .therapist-count-item:last-child {
@@ -650,10 +674,10 @@ small {
 }
 
 .therapist-summary {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
 }
 
 .therapist-name {
@@ -672,7 +696,7 @@ small {
   font-weight: 600;
   min-width: 70px; /* Ensure consistent width */
   text-align: center;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .room-breakdown {
@@ -697,7 +721,6 @@ small {
   border: 1px solid #e2e8f0;
 }
 
-
 /* === Responsive Adjustments === */
 @media (max-width: 992px) {
   .layout {
@@ -710,42 +733,52 @@ small {
   }
 
   .day-picker {
-      margin-left: 0;
-      margin-top: 0.5rem;
+    margin-left: 0;
+    margin-top: 0.5rem;
   }
 
-  th, td {
-      padding: 0.4rem;
-      min-width: 80px;
-      font-size: 0.8rem;
+  th,
+  td {
+    padding: 0.4rem;
+    min-width: 80px;
+    font-size: 0.8rem;
   }
 
   small {
-      font-size: 0.7em;
+    font-size: 0.7em;
   }
 
   .assigned-therapist {
-      font-size: 0.75rem;
-      padding: 0.3rem;
-      min-height: 32px;
+    font-size: 0.75rem;
+    padding: 0.3rem;
+    min-height: 32px;
   }
 
-  .sticky-col-slot {
-      left: 80px;
+  /* Adjust sticky column widths and left offsets for smaller screens */
+  .schedule-table-wrapper th:first-child,
+  .schedule-table-wrapper td:first-child,
+  .weekly-view-active .sticky-col-day,
+  .weekly-view-active .sticky-col-day-cell {
+    width: 80px;
+    min-width: 80px;
   }
-  .sticky-col-slot-cell {
-      left: 80px;
+
+  .weekly-view-active .sticky-col-slot,
+  .weekly-view-active .sticky-col-slot-cell {
+    left: 80px; /* Update left based on new day column width */
+    width: 80px;
+    min-width: 80px;
   }
 
   .rules-panel {
-      width: 100vw;
-      max-width: 100vw;
+    width: 100vw;
+    max-width: 100vw;
   }
   .container.rules-panel-open {
-      margin-right: auto;
+    margin-right: auto;
   }
   .layout.layout-shifted {
-      transform: translateX(0);
+    transform: translateX(0);
   }
 }
 
@@ -755,63 +788,85 @@ small {
     padding: 1rem;
   }
   .header-content {
-      flex-direction: column;
-      align-items: flex-start;
-      margin-bottom: 1.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
   }
   h1 {
-      font-size: 1.5rem;
+    font-size: 1.5rem;
   }
   .current-time {
-      font-size: 0.9rem;
-      text-align: left;
-      margin-top: 0.5rem;
+    font-size: 0.9rem;
+    text-align: left;
+    margin-top: 0.5rem;
   }
   .view-controls {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
   .day-picker {
-      margin-top: 1rem;
-      margin-left: 0;
+    margin-top: 1rem;
+    margin-left: 0;
   }
   .button-group {
-      justify-content: center;
+    justify-content: center;
   }
-  th, td {
-      min-width: 70px;
-      font-size: 0.75rem;
+  th,
+  td {
+    min-width: 70px;
+    font-size: 0.75rem;
   }
-  .sticky-col-slot {
-      left: 70px;
+
+  /* Adjust sticky column widths and left offsets for smaller screens */
+  .schedule-table-wrapper th:first-child,
+  .schedule-table-wrapper td:first-child,
+  .weekly-view-active .sticky-col-day,
+  .weekly-view-active .sticky-col-day-cell {
+    width: 70px;
+    min-width: 70px;
   }
-  .sticky-col-slot-cell {
-      left: 70px;
+
+  .weekly-view-active .sticky-col-slot,
+  .weekly-view-active .sticky-col-slot-cell {
+    left: 70px; /* Update left based on new day column width */
+    width: 70px;
+    min-width: 70px;
   }
 }
 
 @media (max-width: 480px) {
-    .therapist {
-        padding: 0.4rem 0.6rem;
-        font-size: 0.85rem;
-    }
-    .assigned-therapist {
-        min-height: 30px;
-        font-size: 0.7rem;
-    }
-    .clear-slot-btn {
-        font-size: 0.9em;
-    }
-    th, td {
-        min-width: 60px;
-    }
-    .sticky-col-slot {
-        left: 60px;
-    }
-    .sticky-col-slot-cell {
-        left: 60px;
-    }
+  .therapist {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.85rem;
+  }
+  .assigned-therapist {
+    min-height: 30px;
+    font-size: 0.7rem;
+  }
+  .clear-slot-btn {
+    font-size: 0.9em;
+  }
+  th,
+  td {
+    min-width: 60px;
+  }
+
+  /* Adjust sticky column widths and left offsets for smallest screens */
+  .schedule-table-wrapper th:first-child,
+  .schedule-table-wrapper td:first-child,
+  .weekly-view-active .sticky-col-day,
+  .weekly-view-active .sticky-col-day-cell {
+    width: 60px;
+    min-width: 60px;
+  }
+
+  .weekly-view-active .sticky-col-slot,
+  .weekly-view-active .sticky-col-slot-cell {
+    left: 60px; /* Update left based on new day column width */
+    width: 60px;
+    min-width: 60px;
+  }
 }
 
 
