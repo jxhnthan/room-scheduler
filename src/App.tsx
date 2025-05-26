@@ -9,6 +9,9 @@ const rooms = [
   "Counselling Room B",
   "Counselling Room C",
   "Counselling Room D",
+  "Biz 2",
+  "CLB",
+  "Level 4 Pod"
 ];
 const therapists = [
   "Dominic Yeo", "Kirsty Png", "Soon Jiaying", "Andrew Lim",
